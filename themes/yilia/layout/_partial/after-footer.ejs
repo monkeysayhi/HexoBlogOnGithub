@@ -1,0 +1,34 @@
+<script>
+	var yiliaConfig = {
+		mathjax: <%=theme.mathjax%>,
+		animate: <%=theme.animate%>,
+		isHome: <%=is_home()%>,
+		isPost: <%=is_post()%>,
+		isArchive: <%=is_archive()%>,
+		isTag: <%=is_tag()%>,
+		isCategory: <%=is_category()%>,
+		open_in_new: <%=theme.open_in_new%>,
+		root: "<%=config.root%>",
+		innerArchive: <%=theme.smart_menu.innerArchive ? true : false%>
+	}
+</script>
+
+<%- js('./main') %>
+
+<% if (theme.mathjax){ %>
+<%- partial('mathjax') %>
+<% } %>
+
+<% if (theme.prettify_highlight.enable){ %>
+<%= theme.prettify_highlight.enable %>
+<!--prettify的高亮功能-->
+<link href="/static/css/google-code-prettify/<%= theme.prettify_highlight.theme %>" rel="stylesheet">
+<script src="/static/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+$('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+ prettyPrint();
+})
+</script>
+<% } %>
+

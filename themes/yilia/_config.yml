@@ -1,0 +1,107 @@
+# Header
+
+menu:
+  主页: /
+  时间线: /archives/
+
+# SubNav
+subnav:
+  github: "https://github.com/monkeysayhi"
+  # weibo: "#"
+  rss: "/atom.xml"
+  # zhihu: "#"
+  # douban: "#"
+  mail: "mailto:monkeysayhi7@gmail.com"
+  #facebook: "#"
+  #google: "#"
+  #twitter: "#"
+  #linkedin: "#"
+
+rss: /atom.xml
+
+# 是否需要修改 root 路径
+# 如果您的网站存放在子目录中，例如 http://yoursite.com/blog，
+# 请将您的 url 设为 http://yoursite.com/blog 并把 root 设为 /blog/。
+root: 
+
+# Content
+
+# 文章太长，截断按钮文字
+excerpt_link: more
+# 文章卡片右下角常驻链接，不需要请设置为false
+# show_all_link: '展开全文'
+show_all_link: false
+# 数学公式
+mathjax: false
+# 是否开启动画效果
+animate: true
+
+# 代码高亮 
+highlight:
+  enable: true
+  auto_detect: true
+  line_number: true
+  # tab_replace: ''
+
+# 使用google-prettify的代码高亮
+prettify_highlight:
+  enable: false
+  theme: 'prettify.css'
+  # theme: 'themes/tomorrow-night-bright.min.css'
+# 需要跳过渲染
+skip_render:
+  - "static/js/google-code-prettify/**"
+
+# 是否开启统计
+# counter: true
+
+# 是否在新窗口打开链接
+open_in_new: false
+
+# 打赏
+# 请在需要打赏的文章的md文件头部，设置属性reward: true
+
+# 打赏wording
+reward_wording: 'make a better world for everyone'
+# 支付宝二维码图片地址，跟你设置头像的方式一样。比如：/assets/img/alipay.jpg
+alipay: 
+# 微信二维码图片地址
+weixin:  http://oh4pp6966.bkt.clouddn.com/static/images/_common/weixin_pay_qr_code.png
+
+# Miscellaneous
+google_analytics: 'UA-88415227-1'
+favicon: /favicon.png
+
+#你的头像url
+avatar: http://oh4pp6966.bkt.clouddn.com/static/images/_common/avatar.jpg
+
+#微信公众号二维码
+weixin_qr_code: http://oh4pp6966.bkt.clouddn.com/static/images/_common/weixin_qr_code.jpg
+
+#是否开启分享
+share_jia: true
+share_addthis: false
+
+#是否开启多说评论，填写你在多说申请的项目名称 duoshuo: duoshuo-key
+#若使用disqus，请在博客config文件中填写disqus_shortname，并关闭多说评论
+duoshuo: forienlauo # 上线时开启,本地测试时关闭
+
+# 智能菜单
+# 如不需要，将该对应项置为false
+# 比如
+#smart_menu:
+#  friends: false
+smart_menu:
+  innerArchive: '所有文章'
+  tagcloud: '标签'
+  friends: '友链'
+  aboutme: '关于我'
+
+friends:
+  Google大法好: https://www.google.com/
+  程序猿说你好 - github.io: https://monkeysayhi.github.io/
+  # 友情链接4: http://localhost:4000/
+  # 友情链接5: http://localhost:4000/
+  # 友情链接6: http://localhost:4000/
+
+aboutme: 一只猴子，<br>在计算机的丛林里探险。
