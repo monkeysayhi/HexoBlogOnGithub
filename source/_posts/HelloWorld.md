@@ -1,7 +1,9 @@
 ---
 title: HelloWorld  
 date: 2016-11-25 18:23:07    
-tags: [随笔,原创]  
+tags: 
+ - 随笔
+ - 原创
 reward: true  
 ---
 

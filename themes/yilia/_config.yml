@@ -69,7 +69,8 @@ alipay:
 weixin:  http://oh4pp6966.bkt.clouddn.com/static/images/_common/weixin_pay_qr_code.png
 
 # Miscellaneous
-google_analytics: 'UA-88415227-1'
+# google_analytics: 'UA-88415227-1'
+google_analytics: 'UA-89666809-1'
 favicon: /favicon.png
 
 #你的头像url
@@ -84,7 +85,7 @@ share_addthis: false
 
 #是否开启多说评论，填写你在多说申请的项目名称 duoshuo: duoshuo-key
 #若使用disqus，请在博客config文件中填写disqus_shortname，并关闭多说评论
-duoshuo: forienlauo # 上线时开启,本地测试时关闭
+duoshuo: monkeysayhi # 上线时开启,本地测试时关闭
 
 # 智能菜单
 # 如不需要，将该对应项置为false
@@ -99,9 +100,9 @@ smart_menu:
 
 friends:
   Google大法好: https://www.google.com/
-  程序猿说你好 - github.io: https://monkeysayhi.github.io/
+  简书: http://www.jianshu.com/u/e94a22a2b6f1
   # 友情链接4: http://localhost:4000/
   # 友情链接5: http://localhost:4000/
   # 友情链接6: http://localhost:4000/
 
-aboutme: 一只猴子，<br>在计算机的丛林里探险。
+aboutme: 我是猴子007，<br>一只非常特殊的动物，<br>可以从事程序的开发、维护，<br>经常因寻找香蕉或母猿而无心工作。

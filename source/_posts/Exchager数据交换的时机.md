@@ -1,7 +1,10 @@
 ---
 title: Exchager数据交换的时机  
 date: 2016-12-05 20:34:56  
-tags: [Java,并发,原创]  
+tags: 
+ - Java
+ - 并发
+ - 原创
 reward: true  
 ---
 

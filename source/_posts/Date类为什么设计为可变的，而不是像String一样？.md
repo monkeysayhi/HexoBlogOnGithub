@@ -1,7 +1,8 @@
 ---
 title: Date类为什么设计为可变的，而不是像String一样？  
 date: 2016-11-30 23:35:18  
-tags: [Java]  
+tags: 
+ - Java
 reward: true  
 ---
 

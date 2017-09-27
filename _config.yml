@@ -6,7 +6,7 @@
 title: 程序猿说你好
 subtitle: 来了就是猿
 description: 猿来就是你
-author: 猴哥
+author: 猴子007
 contact: monkeysayhi7@gmail.com
 language: zh-CN
 timezone: 
@@ -125,5 +125,5 @@ theme: yilia
 deploy:
   type: git
   repository:
-    github: git@github.com:monkeysayhi/monkeysayhi.github.io.git
+    github: git@monkeysayhi.github.com:monkeysayhi/monkeysayhi.github.io.git
   branch: master

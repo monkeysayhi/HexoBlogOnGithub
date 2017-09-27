@@ -1,7 +1,11 @@
 ---
 title: 源码|ThreadLocal的实现原理  
 date: 2016-11-27 23:45:05  
-tags: [Java,并发,面试,原创]  
+tags: 
+ - Java
+ - 并发
+ - 面试
+ - 原创
 reward: true  
 ---
 

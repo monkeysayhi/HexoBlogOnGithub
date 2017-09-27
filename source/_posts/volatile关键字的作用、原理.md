@@ -1,7 +1,11 @@
 ---
 title: volatile关键字的作用、原理  
 date: 2016-11-29 22:11:35  
-tags: [Java,并发,面试]  
+tags: 
+ - Java
+ - 并发
+ - 面试
+ - 原创
 reward: true  
 ---
 
