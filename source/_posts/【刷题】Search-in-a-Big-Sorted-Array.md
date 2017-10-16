@@ -1,8 +1,9 @@
 ---
-title: Search in a Big Sorted Array
+title: 【刷题】Search in a Big Sorted Array
 tags: 
   - LintCode
   - 算法
+  - 面试
 reward: true
 date: 2017-08-04 13:25:33
 ---
@@ -42,24 +43,26 @@ O(log k), k is the first index of the given target number.
 1. 可以O(logk)的时间缩小二分法的范围
 2. 从而，可以将二分的最坏时间优化到O(logk)
 
-第二点无需证明，下面讲解第一点。  
+第二点无需证明，下面讲解第一点。
 
 ## 以O(logk)的时间缩小二分法的范围
 
-如果从0遍历到k，那么明显时间复杂度为O(k)，超过了了O(logk)。  
-要记得，我们的目的是确定一个数组的上界r，使O(r)=O(k)，继而在这段数组上进行二分查找，复杂度为O(logk)。因此，我们只需要将在O(logk)的时间内找到该r。  
-r的要求如下：  
+如果从0遍历到k，那么明显时间复杂度为O(k)，超过了了O(logk)。
+
+要记得，我们的目的是确定一个数组的上界r，使O(r)=O(k)，继而在这段数组上进行二分查找，复杂度为O(logk)。因此，我们只需要将在O(logk)的时间内找到该r。
+
+r的要求如下：
 
 1. 满足O(r)=O(k)
 2. 计算r的时间为O(logk)
 
-即，寻找一个运算，进行O(logk)次，结果为O(k)。于是想到了**乘幂**：  
+即，寻找一个运算，进行O(logk)次，结果为O(k)。于是想到了**乘幂**：
 
 ```
 2 ** O(logk) = O(k)
 ```
 
-代码如下：  
+代码如下：
 
 ```java
     private int[] computeRange(ArrayReader reader, int target){
