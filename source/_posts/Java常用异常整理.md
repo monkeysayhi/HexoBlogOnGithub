@@ -12,6 +12,8 @@ date: 2017-10-04 22:22:55
 
 <!--more-->
 
+>JDK版本：oracle java 1.8.0_102
+
 # 异常类的继承关系
 
 ![java_exception](../../qiniu/static/images/Java的常用异常整理/java_exception.png)

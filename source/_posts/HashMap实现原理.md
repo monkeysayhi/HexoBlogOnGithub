@@ -11,6 +11,8 @@ HashMap是常考点，而一般不问List的几个实现类(偏简单)。以下�
 
 <!--more-->
 
+>JDK版本：oracle java 1.8.0_102
+
 # 内部存储
 
 HashMap的内部存储是一个数组（bucket），数组的元素Node实现了是Map.Entry接口(hash, key, value, next)，next非空时指向定位相同的另一个Entry，如图：

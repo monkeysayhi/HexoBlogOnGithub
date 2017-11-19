@@ -13,6 +13,8 @@ CopyOnWriteArrayList的设计思想非常简单，但在设计层面有一些小
 
 <!--more-->
 
+>JDK版本：oracle java 1.8.0_102
+
 >本来不想写的，但是github上CopyOnWriteArrayList的code results也有165k，为了流量还是写一写吧。
 
 # 实现

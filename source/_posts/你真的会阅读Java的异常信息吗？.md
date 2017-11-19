@@ -28,6 +28,8 @@ Caused by: java.io.IOException: level 1 exception
 
 <!--more-->
 
+>JDK版本：oracle java 1.8.0_102
+
 # 需要内化的内容
 
 ## 写一个demo测试
