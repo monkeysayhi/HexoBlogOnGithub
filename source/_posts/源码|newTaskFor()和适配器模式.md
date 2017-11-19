@@ -120,13 +120,13 @@ static final class RunnableAdapter<T> implements Callable<T> {
 
 >另外，注意到AbstractExecutorService#newTaskFor()的访问权限为protected，我们可以在扩展类中覆写或直接使用该方法。如ForkJoinPool：
 >
-```java
-protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-    return new ForkJoinTask.AdaptedRunnable<T>(runnable, value);
-}
-protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-    return new ForkJoinTask.AdaptedCallable<T>(callable);
-}
-```
+>```java
+>protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+>    return new ForkJoinTask.AdaptedRunnable<T>(runnable, value);
+>}
+>protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+>    return new ForkJoinTask.AdaptedCallable<T>(callable);
+>}
+>```
 >
 >适配器走起。

@@ -293,29 +293,29 @@ if (f == null) {
 
 >这种一堆if-else的代码很丑。可修改如下：
 >
-```java
-if (f == null) { // check1
-    if (ntasks > 0) {
-        --ntasks;
-        futures.add(ecs.submit(it.next()));
-        ++active;
-        continue;
-    }
-    if (active == 0) { // check2
-        assert ntasks == 0; // 防止自己改吧改吧把它这句判断挪到了前面
-        break;
-    }
-    if (timed) { // check3
-        f = ecs.poll(nanos, TimeUnit.NANOSECONDS);
-        if (f == null) {
-            throw new TimeoutException();
-        }
-        nanos = deadline - System.nanoTime();
-    } else { // check4
-        f = ecs.take();
-    }
-}
-```
+>```java
+>if (f == null) { // check1
+>    if (ntasks > 0) {
+>         --ntasks;
+>         futures.add(ecs.submit(it.next()));
+>         ++active;
+>         continue;
+>     }
+>     if (active == 0) { // check2
+>         assert ntasks == 0; // 防止自己改吧改吧把它这句判断挪到了前面
+>         break;
+>     }
+>    if (timed) { // check3
+>        f = ecs.poll(nanos, TimeUnit.NANOSECONDS);
+>        if (f == null) {
+>            throw new TimeoutException();
+>        }
+>        nanos = deadline - System.nanoTime();
+>    } else { // check4
+>        f = ecs.take();
+>    }
+>}
+>```
 >
 >修改依据：
 >
