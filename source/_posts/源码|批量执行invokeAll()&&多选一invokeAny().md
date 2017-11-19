@@ -8,7 +8,6 @@ reward: true
 date: 2017-11-19 21:40:13
 ---
 
-
 ExecutorService中定义了两个批量执行任务的方法，invokeAll()和invokeAny()，在批量执行或多选一的业务场景中非常方便。invokeAll()在所有任务都完成（包括成功/被中断/超时）后才会返回，invokeAny()在任意一个任务成功（或ExecutorService被中断/超时）后就会返回。
 
 AbstractExecutorService实现了这两个方法，本文将先后分析invokeAll()和invokeAny()两个方法的源码实现。
