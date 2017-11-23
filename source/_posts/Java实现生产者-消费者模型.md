@@ -154,8 +154,8 @@ public class BlockingQueueModel implements Model {
       // 不定期生产，模拟随机的用户请求
       Thread.sleep((long) (Math.random() * 1000));
       Task task = new Task(increTaskNo.getAndIncrement());
-      queue.put(task);
       System.out.println("produce: " + task.no);
+      queue.put(task);
     }
   }
 
@@ -197,6 +197,36 @@ consume: 7
 由于操作“出队/入队+日志输出”不是原子的，所以上述日志的绝对顺序与实际的出队/入队顺序有出入，但对于同一个任务号`task.no`，其consume日志一定出现在其produce日志之后，即：同一任务的消费行为一定发生在生产行为之后。缓冲区的容量留给读者验证。符合两个验证条件。
 
 BlockingQueue写法的核心只有两行代码，并发和容量控制都封装在了BlockingQueue中，正确性由BlockingQueue保证。面试中首选该写法，自然美观简单。
+
+>勘误：
+>
+>在简书回复一个读者的时候，顺道发现了这个问题：生产日志应放在入队操作之前，否则同一个task的生产日志可能出现在消费日志之后。
+>
+>```java
+>// 旧的错误代码
+>queue.put(task);
+>System.out.println("produce: " + task.no);
+>```
+>
+>```java
+>// 正确代码
+>>System.out.println("produce: " + task.no);
+>queue.put(task);
+>```
+>
+>具体来说，生产日志应放在入队操作之前，消费日志应放在出队操作之后，以保障：
+>
+>* 消费线程中queue.take()返回之后，对应生产线程（生产该task的线程）中queue.put()及之前的行为，对于消费线程来说都是可见的
+>
+>想想为什么呢？因为我们需要借助“queue.put()与queue.take()的偏序关系”。其他实现方案分别借助了条件队列、锁的偏序关系，不存在该问题。要解释这个问题，需要读者明白可见性和Happens-Before的概念，篇幅所限，暂时不多解释。
+>
+>PS：旧代码没出现这个问题，是因为消费者打印消费日志之前，sleep了500+ms，而恰巧竞争不激烈，这个时间一般足以让“滞后”生产日志打印完成（但不保证）。
+>
+>---
+>
+>顺道说明一下，猴子现在主要在个人博客、简书、掘金和CSDN上发文章，搜索“猴子007”或“程序猿说你好”都能找到，有勘误也都会同步到这几个地方。
+>
+>写文章不是为了出名，一方面希望整理自己的学习成果，一方面希望有更多人能帮助猴子纠正学习过程中的错误。如果能认识一些志同道合的朋友，一起提高就更好了。所以希望各位转载的时候，一定带着猴子个人博客末尾的转载声明。需要联系猴子的话，简书或邮件都可以。文章水平不高，就不奢求有人能打赏鼓励我这泼猴了T_T
 
 ## 实现二：wait && notify
 
