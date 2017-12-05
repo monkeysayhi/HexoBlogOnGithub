@@ -410,7 +410,7 @@ AQS#parkAndCheckInterrupt()借助LockSupport.park()实现阻塞等待。最后�
 
 如果是被中断的，则需要在外层AQS#acquireQueued()中重新设置中断标志interrupted，并在下一次循环中返回。然后在更外层的AQS#acquire()中调用AQS.selfInterrupt()重放中断。
 
->猴子没有理解这一块对中断的使用。为什么要在下一节点获取成功之后再返回中断标志？不能直接在AQS#parkAndCheckInterrupt()返回后中断吗？
+>为什么不能直接在AQS#parkAndCheckInterrupt()返回后中断？因为返回中转标志能提供更大的灵活性，外界可以自行决定是即时重放、稍后重放还是压根不重放。Condition在得知AQS#acquireQueued()是被中断的之后，便没有直接复现中断，而是根据`REINTERRUPT`配置决定是否重放。
 
 ##### cancelAcquire
 
