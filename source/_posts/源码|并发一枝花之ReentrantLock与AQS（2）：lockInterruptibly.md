@@ -32,11 +32,23 @@ public interface Lock {
 
 Lock#lockInterruptibly()是Lock#lock()的一个衍生品，解锁方法也为Lock#unlock()。因此，我们只需要分析Lock#lockInterruptibly()。
 
+## 功能
+
+Lock#lockInterruptibly()方法比较特殊，当通过这个方法去获取锁时，如果线程正在等待获取锁，则这个线程能够响应中断，即中断线程的等待状态。
+
+一个典型用法如下：
+
+当两个线程同时通过Lock#lockInterruptibly()阻塞的获取某个锁时，假如此时线程A获取到了锁，则线程B只有继续等待；此时，让线程A对线程B调用threadB.interrupt()方法，能够中断线程B的等待，让线程B可以先做其他事。
+
+想对的，如果使用内置锁synchronized，当一个线程处于等待某个锁的状态时，是无法被中断的，只有一直等待下去。这是`可中断锁`最大的优势。
+
+>注意，当一个线程获取了锁之后，是不会被Thread#interrupt()方法中断的。
+
 # 实现原理
 
 基本的实现原理与ReentrantLock#lock()相同。
 
-仍以默认的非公平策略为例进行分析。 
+仍以默认的非公平策略为例进行分析。
 
 ## lockInterruptibly
 

@@ -3,6 +3,7 @@ title: 条件队列大法好：使用wait、notify和notifyAll的正确姿势
 tags:
   - Java
   - 并发
+  - 猿格
   - 原创
 reward: true
 date: 2017-11-29 14:38:04
