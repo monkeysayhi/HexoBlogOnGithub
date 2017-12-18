@@ -3,6 +3,7 @@ title: 条件队列大法好：wait和notify的基本语义
 tags:
   - Java
   - 并发
+  - 面试
   - 原创
 reward: true
 date: 2017-11-15 23:15:56
