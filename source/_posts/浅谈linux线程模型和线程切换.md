@@ -1,7 +1,6 @@
 ---
 title: 浅谈linux线程模型和线程切换
 tags:
-  - Java
   - Linux
   - 并发
   - 面试
