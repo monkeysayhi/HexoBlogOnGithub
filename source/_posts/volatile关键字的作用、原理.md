@@ -9,6 +9,8 @@ tags:
 reward: true  
 ---
 
+>此文对于部分原理的解释不全，甚至有错误。建议同时参考[一文解决内存屏障](/2017/12/28/一文解决内存屏障/)阅读。
+
 在只有双重检查锁，没有volatile的懒加载单例模式中，由于`指令重排序`的问题，我确实不会拿到`两个不同的单例`了，但我会拿到`“半个”单例`。
 
 而发挥神奇作用的volatile，可以当之无愧的被称为Java并发编程中*“出现频率最高的关键字”*，常用于保持内存可见性和防止指令重排序。
@@ -25,13 +27,15 @@ reward: true
 
 ```java
 public class MutableInteger {
-	private int value;
-	public int get(){
-		return value;
-	}
-	public void set(int value){
-		this.value = value;
-	}
+    private int value;
+    	
+    public int get(){
+        return value;
+    }
+    	
+    public void set(int value){
+        this.value = value;
+    }
 }
 ```
 
@@ -86,14 +90,16 @@ volatile的特殊规则就是：
 
 ```java
 class Singleton {
-	private static Singleton instance;
-	private Singleton(){}
-	public static Singleton getInstance() {
-		if ( instance == null ) { //这里存在竞态条件
-			instance = new Singleton();
-		}
-		return instance;
-	}
+    private static Singleton instance;
+    	
+    private Singleton(){}
+    	
+    public static Singleton getInstance() {
+        if (instance == null) { // 这里存在竞态条件
+            instance = new Singleton();
+        }
+        return instance;
+    }
 }
 ```
 
@@ -105,22 +111,29 @@ class Singleton {
 
 ```java
 class Singleton {
-	private static Singleton instance;
-	private Singleton(){}
-	public static Singleton getInstance() {
-		if ( instance == null ) { //当instance不为null时，仍可能指向一个“被部分初始化的对象”
-			synchronized (Singleton.class) {
-				if ( instance == null ) {
-					instance = new Singleton();
-				}
-			}
-		}
-		return instance;
-	}
+    private static Singleton instance;
+    
+    public int f1 = 1;   // 触发部分初始化问题
+    public int f2 = 2;
+    	
+    private Singleton(){}
+	
+    public static Singleton getInstance() {
+        if (instance == null) { // 当instance不为null时，可能指向一个“被部分初始化的对象”
+            synchronized (Singleton.class) {
+                if ( instance == null ) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
 }
 ```
 
 “看起来”非常完美：既减少了阻塞，又避免了竞态条件。不错，但实际上仍然存在一个问题——**当instance不为null时，仍可能指向一个`"被部分初始化的对象"`**。
+
+>如果Singleton没有字段，自然也不会有部分初始化之说。因此，这里添加了两个字段，已触发部分初始化问题。
 
 问题出在这行简单的赋值语句：
 
@@ -132,7 +145,7 @@ instance = new Singleton();
 
 ```java
 memory = allocate();	//1：分配对象的内存空间
-initInstance(memory);	//2：初始化对象
+initInstance(memory);	//2：初始化对象（对f1、f2初始化）
 instance = memory;		//3：设置instance指向刚分配的内存地址
 ```
 
@@ -158,14 +171,27 @@ private static volatile Singleton instance;
 
 volatile关键字通过`“内存屏障”`来防止指令被重排序。
 
-为了实现volatile的内存语义，编译器在生成字节码时，会在指令序列中插入内存屏障来禁止特定类型的处理器重排序。然而，对于编译器来说，发现一个最优布置来最小化插入屏障的总数几乎不可能，为此，Java内存模型采取保守策略。
+不同CPU架构对内存屏障的实现不同，则JVM对volatile的实现也不同。一种最简单的实现方式是：
 
-下面是基于保守策略的JMM内存屏障插入策略：
+* 在每个volatile写操作的后面插入一个Full Barriers。
+* 在每个volatile读操作的前面插入一个Full Barriers。
 
-* 在每个volatile写操作的前面插入一个StoreStore屏障。
-* 在每个volatile写操作的后面插入一个StoreLoad屏障。
-* 在每个volatile读操作的后面插入一个LoadLoad屏障。
-* 在每个volatile读操作的后面插入一个LoadStore屏障。
+---
+
+
+>勘误：不同CPU架构对内存屏障的实现不同，但是这里的实现怎么看都不对。特改为一种正确实现，建议阅读本文开头指向的新文章；以下是原文。
+>
+>---
+>
+>为了实现volatile的内存语义，编译器在生成字节码时，会在指令序列中插入内存屏障来禁止特定类型的处理器重排序。然而，对于编译器来说，发现一个最优布置来最小化插入屏障的总数几乎不可能，为此，Java内存模型采取保守策略。
+>
+>下面是基于保守策略的JMM内存屏障插入策略：
+>
+>* 在每个volatile写操作的前面插入一个StoreStore屏障。
+>* 在每个volatile写操作的后面插入一个StoreLoad屏障。
+>* 在每个volatile读操作的后面插入一个LoadLoad屏障。
+>* 在每个volatile读操作的后面插入一个LoadStore屏障。
+>
 
 ## 进阶
 
@@ -178,7 +204,7 @@ volatile关键字通过`“内存屏障”`来防止指令被重排序。
 ```java
 class Singleton {
 	...
-		if ( instance == null ) { //可能发生不期望的指令重排
+		if (instance == null) { // 可能发生不期望的指令重排
 			synchronized (Singleton.class) {
 				if ( instance == null ) {
 					instance = new Singleton();
@@ -210,12 +236,14 @@ class Singleton {
 
 >错把volatile变量当做原子变量。
 
-出现这种误解的原因，主要是**volatile关键字使变量的读、写具有了“原子性”**。然而这种原子性*仅限于变量（包括引用）的读和写，无法涵盖变量上的任何操作*，即：
+出现这种误解的原因，主要是**volatile关键字使变量的读、写具有了“原子性”**。然而这种"原子性"*仅限于变量（包括引用）的读和写，无法涵盖变量上的任何操作*，即：
 
 * 基本类型的自增（如`count++`）等操作不是原子的。
 * 对象的任何非原子成员调用（包括`成员变量`和`成员方法`）不是原子的。
 
 如果希望上述操作也具有原子性，那么只能采取锁、原子变量更多的措施。
+
+>严格来说，volatile的读、写也不是原子的，但从可见性的角度上看，与原子性表现一致。
 
 # 总结
 
