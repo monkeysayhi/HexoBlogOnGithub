@@ -9,9 +9,11 @@ reward: true
 date: 2017-08-19 21:38:40
 ---
 
-[原题戳我](http://www.lintcode.com/en/problem/linked-list-cycle-ii)
+[原题戳我](https://leetcode.com/problems/linked-list-cycle-ii/description/)
 
 <!--more-->
+
+>[basic problem](https://leetcode.com/problems/linked-list-cycle/description/)
 
 # 题目
 
@@ -103,38 +105,38 @@ Can you solve it without using extra space?
 
 ```java
 /**
- * Definition for ListNode.
- * public class ListNode {
+ * Definition for singly-linked list.
+ * class ListNode {
  *     int val;
  *     ListNode next;
- *     ListNode(int val) {
- *         this.val = val;
- *         this.next = null;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
  *     }
  * }
- */ 
+ */
 public class Solution {
-    /**
-     * @param head: The first node of linked list.
-     * @return: The node where the cycle begins. 
-     *           if there is no cycle, return null
-     */
-    public ListNode detectCycle(ListNode head) {  
-        // write your code here
+    // solution1：set记录访问过的节点，存在重复访问的节点证明有环；重复节点即为环开始的节点
+    // solution2：快慢指针，相遇即有环；后续证明见https://monkeysayhi.github.io/2017/08/19/%E3%80%90%E5%88%B7%E9%A2%98%E3%80%91Linked-List-Cycle-II/
+    public ListNode detectCycle(ListNode head) {
         if (head == null) {
             return null;
         }
         
         ListNode slow = head;
+        // 与求中点不同，fast要从head开始
         ListNode fast = head;
+        boolean hasCycle = false;
         while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
+            // 移动一次后再判断。因为刚进入链表时也是相等的
             if (slow == fast) {
+                hasCycle = true;
                 break;
             }
         }
-        if (fast == null || fast.next == null) {
+        if (!hasCycle) {
             return null;
         }
         
