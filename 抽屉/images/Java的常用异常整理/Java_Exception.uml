@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.lang.NullPointerException</OriginalElement>
+  <nodes>
+    <node x="283.280303030303" y="79.0">java.lang.Throwable</node>
+    <node x="478.0" y="237.0">java.lang.InterruptedException</node>
+    <node x="111.530303030303" y="158.0">java.lang.Error</node>
+    <node x="662.0" y="237.0">java.io.IOException</node>
+    <node x="170.0" y="237.0">java.lang.AssertionError</node>
+    <node x="312.0" y="237.0">java.lang.RuntimeException</node>
+    <node x="387.5" y="316.0">java.lang.IllegalArgumentException</node>
+    <node x="0.0" y="237.0">java.lang.OutOfMemoryError</node>
+    <node x="513.0" y="158.0">java.lang.Exception</node>
+    <node x="203.5" y="316.0">java.lang.NullPointerException</node>
+    <node x="280.280303030303" y="0.0">java.io.Serializable</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.lang.OutOfMemoryError" target="java.lang.Error">
+      <point x="0.0" y="-14.5" />
+      <point x="75.0" y="212.0" />
+      <point x="127.030303030303" y="212.0" />
+      <point x="-15.5" y="14.5" />
+    </edge>
+    <edge source="java.lang.RuntimeException" target="java.lang.Exception">
+      <point x="0.0" y="-14.5" />
+      <point x="385.0" y="212.0" />
+      <point x="528.6666666666666" y="212.0" />
+      <point x="-31.33333333333337" y="14.5" />
+    </edge>
+    <edge source="java.lang.Error" target="java.lang.Throwable">
+      <point x="0.0" y="-14.5" />
+      <point x="142.530303030303" y="133.0" />
+      <point x="307.530303030303" y="133.0" />
+      <point x="-24.25" y="14.5" />
+    </edge>
+    <edge source="java.lang.Exception" target="java.lang.Throwable">
+      <point x="0.0" y="-14.5" />
+      <point x="560.0" y="133.0" />
+      <point x="356.030303030303" y="133.0" />
+      <point x="24.25" y="14.5" />
+    </edge>
+    <edge source="java.lang.InterruptedException" target="java.lang.Exception">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="java.lang.Throwable" target="java.io.Serializable">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="java.io.IOException" target="java.lang.Exception">
+      <point x="0.0" y="-14.5" />
+      <point x="716.0" y="212.0" />
+      <point x="591.3333333333334" y="212.0" />
+      <point x="31.33333333333337" y="14.5" />
+    </edge>
+    <edge source="java.lang.AssertionError" target="java.lang.Error">
+      <point x="0.0" y="-14.5" />
+      <point x="231.0" y="212.0" />
+      <point x="158.030303030303" y="212.0" />
+      <point x="15.5" y="14.5" />
+    </edge>
+    <edge source="java.lang.NullPointerException" target="java.lang.RuntimeException">
+      <point x="0.0" y="-14.5" />
+      <point x="285.5" y="291.0" />
+      <point x="348.5" y="291.0" />
+      <point x="-36.5" y="14.5" />
+    </edge>
+    <edge source="java.lang.IllegalArgumentException" target="java.lang.RuntimeException">
+      <point x="0.0" y="-14.5" />
+      <point x="484.5" y="291.0" />
+      <point x="421.5" y="291.0" />
+      <point x="36.5" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="317.5" y="173.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
