@@ -15,6 +15,13 @@ date: 2018-01-02 14:53:11
 
 <!--more-->
 
+>CAS的使用可参考：
+>
+>* [源码|并发一枝花之ConcurrentLinkedQueue【伪】](/2017/10/22/源码|并发一枝花之ConcurrentLinkedQueue【伪】/)
+>* [源码|使用FutureTask的正确姿势](/2017/10/29/源码|使用FutureTask的正确姿势/)
+>* [源码|并发一枝花之ReentrantLock与AQS（1）：lock、unlock](/2017/12/05/源码|并发一枝花之ReentrantLock与AQS（1）：lock、unlock/)
+>* [源码|并发一枝花之ReentrantLock与AQS（3）：Condition](/2017/12/07/源码|并发一枝花之ReentrantLock与AQS（3）：Condition/)
+
 # 1 定义
 
 ## 1.1 基本的ABA问题
