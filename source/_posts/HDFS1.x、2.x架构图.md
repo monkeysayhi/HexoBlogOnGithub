@@ -41,7 +41,7 @@ date: 2018-01-09 18:41:45
     * HA支持一个Active Namenode和一个Standby Namenode，以一个Namespace（或Nameservice）的形式对外服务。在active挂时，自动将将standby切换为新的active，旧的active恢复后成为standby。
     * Federation将多个Namespace合并为一个视图，用户可通过viewfs访问。
 * Datanode * n
-    * 所有节点共同对所有Namespace服务。在Datanode上，各Namespace拥有单独的目录。
+    * 所有节点共同对所有Namespace服务。在Datanode上，各Namespace拥有单独的目录（blockpool）。
 * Client * n
     * 2.x的Federation通过`客户端挂载表`实现，要通过ViewFileSystem访问NameNode。（这一点也算不上变化，多了一种门面而已）
 
