@@ -7,6 +7,7 @@ tags:
   - IDEA
   - 原创
 reward: true
+date: 2018-01-15 17:45:09
 ---
 
 参考[Mac编译Hadoop源码](/2018/01/15/Mac编译Hadoop源码/)编译好Hadoop源码后，就可以单步debug追源码了。

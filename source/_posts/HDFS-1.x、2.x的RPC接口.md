@@ -38,4 +38,3 @@ HDFS中的主要RPC接口。
 在1.x中已经介绍了未开启HA时的检查点工作原理：fsimage与editlog仅保存在唯一的名字节点上，第二名字节点定期合并得到新的镜像，并同步回名字节点。
 
 在2.x的HA机制中，引入JournalNode（至少3个，最好是奇数）在active于standby节点间同步fsimage与editlog：active节点实时将editlog同步到JournalNode集群中（保证至少`n - (n-/1)/2`个节点成功）；standby节点实时从JournalNode集群中同步回editlog。可以认为standby上的命名空间镜像与active上是完全一致的，因此，standby只需要定期检查editlog是否有变化，并相应在本地合并得到新的镜像。然后通过HTTP接口同步回active节点。
-
