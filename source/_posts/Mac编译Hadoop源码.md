@@ -49,7 +49,7 @@ Hadoop源码量巨大、依赖众多，编译时间比较长。
 
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:2.5.1:compile (default-compile) on project hadoop-annotations: Compilation failure: Compilation failure:
-[ERROR] /Volumes/Extended/Users/lauo/IdealProjects/Git-Study/hadoop/hadoop-common-project/hadoop-annotations/src/main/java/org/apache/hadoop/classification/tools/ExcludePrivateAnnotationsJDiffDoclet.java:[20,22] 错误: 程序包com.sun.javadoc不存在
+[ERROR] /Volumes/Extended/Users/msh/IdealProjects/Git-Study/hadoop/hadoop-common-project/hadoop-annotations/src/main/java/org/apache/hadoop/classification/tools/ExcludePrivateAnnotationsJDiffDoclet.java:[20,22] 错误: 程序包com.sun.javadoc不存在
 ```
 
 不明白为啥这个包会不存在，可能是JDK版本问题。google一番，参考[解决Mac OS 下编译Hadoop Annotations 程序包com.sun.javadoc找不到问题](http://blog.csdn.net/starshine/article/details/70229697)解决。
@@ -113,7 +113,7 @@ done < tmp/tmp.txt
 
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.7:run (make) on project hadoop-pipes: An Ant BuildException has occured: exec returned: 1
-[ERROR] around Ant part ...<exec dir="/Volumes/Extended/Users/lauo/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/target/native" executable="cmake" failonerror="true">... @ 5:153 in /Volumes/Extended/Users/lauo/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/target/antrun/build-main.xml
+[ERROR] around Ant part ...<exec dir="/Volumes/Extended/Users/msh/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/target/native" executable="cmake" failonerror="true">... @ 5:153 in /Volumes/Extended/Users/msh/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/target/antrun/build-main.xml
 ```
 
 猜测是ant版本问题，重装了jdk1.7适配的ant。
@@ -123,7 +123,7 @@ done < tmp/tmp.txt
 结果还是报这个错，打开build-main.xml看，发现是一个cmake命令的配置，copy到终端执行：
 
 ```bash
-cmake /Volumes/Extended/Users/lauo/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/src/ -DJVM_ARCH_DATA_MODEL=64
+cmake /Volumes/Extended/Users/msh/IdealProjects/Git-Study/hadoop/hadoop-tools/hadoop-pipes/src/ -DJVM_ARCH_DATA_MODEL=64
 ```
 
 输出：
@@ -188,7 +188,7 @@ export OPENSSL_INCLUDE_DIR=$OPENSSL_ROOT_DIR/include
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.16:test (default-test) on project hadoop-auth: There are test failures.
 [ERROR]
-[ERROR] Please refer to /Volumes/Extended/Users/lauo/IdealProjects/Git-Study/hadoop/hadoop-common-project/hadoop-auth/target/surefire-reports for the individual test results.
+[ERROR] Please refer to /Volumes/Extended/Users/msh/IdealProjects/Git-Study/hadoop/hadoop-common-project/hadoop-auth/target/surefire-reports for the individual test results.
 
 Results :
 
