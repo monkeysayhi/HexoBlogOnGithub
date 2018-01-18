@@ -1,5 +1,5 @@
 ---
-title: 源码|HDFS之DataNode章：启动过程
+title: 源码|HDFS之DataNode：启动过程
 tags:
   - Hadoop
   - HDFS
@@ -11,7 +11,7 @@ date: 2018-01-18 12:46:40
 
 掌握[Mac编译Hadoop源码](/2018/01/15/Mac编译Hadoop源码/)与[Hadoop单步debug追源码](/2018/01/15/Hadoop单步debug追源码/)后，就能告别人肉调用栈，利用IDE轻松愉快的追各种开源框架的源码啦~
 
-今天是HDFS中DataNode章的第一篇——DataNode启动过程。
+今天是HDFS中DataNode的第一篇——DataNode启动过程。
 
 <!--more-->
 
