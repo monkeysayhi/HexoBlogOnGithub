@@ -17,6 +17,8 @@ date: 2018-01-18 12:46:40
 
 <!--[TOC]-->
 
+>源码版本：Apache Hadoop 2.6.0
+>
 >可参考猴子追源码时的[速记](http://note.youdao.com/noteshare?id=868f0221312ea53bbf430baa172310ad)打断点，亲自debug一遍。
 
 # 在开始之前
