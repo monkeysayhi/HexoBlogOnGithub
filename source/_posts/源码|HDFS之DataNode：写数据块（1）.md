@@ -21,7 +21,7 @@ HDFS 2.x进一步将数据块存储服务抽象为blockpool，不过写数据块
 >
 >可参考猴子追源码时的[速记](http://note.youdao.com/noteshare?id=84376f19ed7d5096a4f3472e20539df6)打断点，亲自debug一遍。
 >
->后续再写两篇文章分别分析管道写无异常、管道写有异常两种情况。
+>副本系数1，即只需要一个datanode构成最小的管道，与更常见的管道写相比，可以认为“无管道”。后续再写两篇文章分别分析管道写无异常、管道写有异常两种情况。
 
 # 在开始之前
 
@@ -244,7 +244,23 @@ Receiver类实现了DataTransferProtocol接口，但没有实现DataTransferProt
         ...// 管道错误恢复相关
       }
 
-      ...// 下游节点的处理（见后）。一个datanode是没有下游节点的。
+      ...// 下游节点的处理。一个datanode是没有下游节点的。
+      
+      // 发送的第一个packet是空的，只用于建立管道。这里立即返回ack表示管道是否建立成功
+      // 由于该datanode没有下游节点，则执行到此处，表示管道已经建立成功
+      if (isClient && !isTransfer) {
+        if (LOG.isDebugEnabled() || mirrorInStatus != SUCCESS) {
+          LOG.info("Datanode " + targets.length +
+                   " forwarding connect ack to upstream firstbadlink is " +
+                   firstBadLink);
+        }
+        BlockOpResponseProto.newBuilder()
+          .setStatus(mirrorInStatus)
+          .setFirstBadLink(firstBadLink)
+          .build()
+          .writeDelimitedTo(replyOut);
+        replyOut.flush();
+      }
 
       // 接收数据块（也负责发送到下游，不过此处没有下游节点）
       if (blockReceiver != null) {
@@ -427,7 +443,7 @@ BlockReceiver#receiveBlock()：
       final int checksumLen = diskChecksum.getChecksumSize(len);
       final int checksumReceivedLen = checksumBuf.capacity();
 
-      ...// 在持久化之前，要先对收到的packet做一次校验（使用packet本身的校验机制）
+      ...// 如果是管道中的最后一个节点，则持久化之前，要先对收到的packet做一次校验（使用packet本身的校验机制）
       ...// 如果校验错误，则委托PacketResponder线程返回 ERROR_CHECKSUM 的ack
 
       final boolean shouldNotWriteChecksum = checksumReceivedLen == 0
@@ -481,7 +497,16 @@ BlockReceiver#receiveBlock()：
     // 因此，当标志位lastPacketInBlock为true时，不能返回0，要返回一个负值，以区分未到达最后一个packet之前的情况
     return lastPacketInBlock?-1:len;
   }
+  
+  ...
+  
+  private boolean shouldVerifyChecksum() {
+    // 对于客户端写，只有管道中的最后一个节点满足`mirrorOut == null`
+    return (mirrorOut == null || isDatanode || needsChecksumTranslation);
+  }
 ```
+
+>BlockReceiver#shouldVerifyChecksum()主要与管道写有关，本文只有一个datanode，则一定满足`mirrorOut == null`。
 
 上述代码看起来长，主要工作只有四项：
 
@@ -567,7 +592,7 @@ PacketResponder#run()：
 
           ...// 中断退出
 
-          // 如果是最后一个packet，将block的状态转换为FINALIZE，并关闭BlockReceiver
+          // 如果是最后一个packet，将block的状态转换为FINALIZED，并关闭BlockReceiver
           if (lastPacketInBlock) {
             finalizeBlock(startTime);
           }
@@ -596,7 +621,9 @@ PacketResponder#run()：
 1. 接收下游节点的ack
 2. 比较ack.seqno与当前队头的pkt.seqno
 3. 如果相等，则向上游发送pkt
-4. 如果是最后一个packet，将block的状态转换为FINALIZE
+4. 如果是最后一个packet，将block的状态转换为FINALIZED
+
+>一不小心把管道响应的逻辑也分析了。。。
 
 扫一眼PacketResponder线程使用的出队和查看对头的方法：
 
@@ -986,6 +1013,6 @@ BPServiceActor线程唤醒后，醒来后，继续心跳循环：
     * 重复汇报已删除的数据块：namenode发现未存储该数据块的信息，则得知其已经删除了，会忽略该信息。
     * 重复汇报已收到的数据块：namenode发现新收到的数据块与已存储数据块的信息完全一致，也会忽略该信息。
 
-# 小结
+# 总结
 
 1个客户端+1个datanode构成了最小的管道。本文梳理了在这个最小管道上无异常情况下的写数据块过程，在此之上，再来分析管道写的有异常的难度将大大降低。
