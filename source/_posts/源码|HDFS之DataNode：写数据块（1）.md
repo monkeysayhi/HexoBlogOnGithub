@@ -317,7 +317,7 @@ Receiver类实现了DataTransferProtocol接口，但没有实现DataTransferProt
         replicaInfo = datanode.data.createTemporary(storageType, block);
       } else {
         switch (stage) {
-        // 对于客户端发起的写数据请求（只考虑create，不考虑append），在rbw目录下创建block文件
+        // 对于客户端发起的写数据请求（只考虑create，不考虑append），在rbw目录下创建数据块（block文件、meta文件，数据块处于RBW状态）
         case PIPELINE_SETUP_CREATE:
           replicaInfo = datanode.data.createRbw(storageType, block, allowLazyPersist);
           datanode.notifyNamenodeReceivingBlock(
@@ -352,6 +352,10 @@ Receiver类实现了DataTransferProtocol接口，但没有实现DataTransferProt
 ```
 
 尽管上述代码的注释加了不少，但创建block的场景比较简单，只需要记住**在rbw目录下创建block文件和meta文件**即可。
+
+>在rbw目录下创建数据块后，还要通过DataNode#notifyNamenodeReceivingBlock()向namenode汇报正在接收的数据块。该方法仅仅将数据块放入缓冲区中，由BPServiceActor线程异步汇报。
+>
+>此处不展开，后面会介绍一个相似的方法DataNode#notifyNamenodeReceivedBlock()。
 
 ## 接收数据块：BlockReceiver#receiveBlock()
 
