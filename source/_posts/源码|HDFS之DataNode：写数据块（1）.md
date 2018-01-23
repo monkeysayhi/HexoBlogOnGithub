@@ -15,7 +15,7 @@ HDFS 2.x进一步将数据块存储服务抽象为blockpool，不过写数据块
 
 <!--more-->
 
-<!--[TOC]-->
+[TOC]
 
 >源码版本：Apache Hadoop 2.6.0
 >
