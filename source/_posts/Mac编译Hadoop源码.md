@@ -229,3 +229,10 @@ sbin/yarn-daemon.sh start timelineserver
 ```
 
 启动后，访问NameNode、ResourceManager的Web UI，Timeline的RESTful接口，创建目录、上传文件，跑示例MapReduce，以验证是否成功部署。
+
+---
+
+>参考：
+>
+>* [HowToSetupYourDevelopmentEnvironment](https://wiki.apache.org/hadoop/HowToSetupYourDevelopmentEnvironment)
+>
