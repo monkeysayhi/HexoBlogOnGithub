@@ -1,0 +1,21 @@
+digraph NNBlock {
+	complete -> needed_replication [label = "需要复制，\n如存活副本数小于副本系数", color = "red"]
+	needed_replication -> pending_replication [label = "异步发送副本复制命令，\n开始复制", color = "red"]
+	pending_replication -> complete [label = "收到了数据块汇报，\n复制成功", color = "red"]
+	pending_replication -> timeout [label = "超时未收到\n目标数据块汇报", color = "red"]
+	timeout -> needed_replication [label = "还需要复制", color = "red"]
+	timeout -> complete [label = "不需要复制"]
+
+	complete -> excess_replicate [label = "需要删除，\n如存活副本数大于副本系数", color = "blue"]
+	excess_replicate -> invalidate [label = "异步发送副本删除命令，\n开始删除", color = "blue"]
+	invalidate -> none [label = "发送命令后即认为删除成功\n/datanode或数据目录死亡", color = "blue"]
+
+	needed_replication -> none [label = "收到目标数据块的汇报，\n不再需要复制"]
+	pending_replication -> none [label = "收到目标数据块的汇报，\n不再需要复制"]
+	timeout -> none [label = "收到目标数据块的汇报，\n不再需要复制"]
+
+	excess_replicate -> none [label = "datanode或数据目录死亡"]
+
+	complete [shape = "doublecircle"]
+	none [shape = "doublecircle"]
+}
