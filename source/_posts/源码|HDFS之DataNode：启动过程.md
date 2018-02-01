@@ -37,7 +37,7 @@ datanode的启动过程主要完成以下工作：
     * 监控：DataBlockScanner、DirectoryScanner、JVMPauseMonitor
     * 其他：InfoServer
 * 向namenode注册
-* 初始化存储结构，包括各数据目录`${dfs.data.dir}`，及数据目录下各块池的存储结构
+* 初始化存储结构，包括各数据目录`${dfs.datanode.data.dir}`，及数据目录下各块池的存储结构
 * 【可能】数据块恢复等（暂不讨论）
 
 >LazyWriter等特性暂不讨论。
@@ -141,7 +141,7 @@ DataNode.createDataNode()：
   }
 ```
 
-dataLocations维护的是全部`${dfs.data.dir}`，猴子只配置了一个目录，实际使用中会在将每块磁盘都挂载为一块目录。
+dataLocations维护的是全部`${dfs.datanode.data.dir}`，猴子只配置了一个目录，实际使用中会在将每块磁盘都挂载为一块目录。
 
 从DataNode.makeInstance()开始创建DataNode：
 
@@ -571,7 +571,7 @@ DataStorage#recoverTransitionRead()：
       bpDataDirs.add(bpRoot);
     }
 
-    // 在各${dfs.data.dir}/current下检查并创建blockpool目录
+    // 在各${dfs.datanode.data.dir}/current下检查并创建blockpool目录
     makeBlockPoolDataDir(bpDataDirs, null);
     
     // 创建BlockPoolSliceStorage，并放入映射DataStorage#bpStorageMap：`Map<bpid, BlockPoolSliceStorage>`
@@ -627,7 +627,7 @@ FsDatasetFactory#newInstance()：
   
   private void addVolume(Collection<StorageLocation> dataLocations,
       Storage.StorageDirectory sd) throws IOException {
-    // 使用`${dfs.data.dir}/current`目录
+    // 使用`${dfs.datanode.data.dir}/current`目录
     final File dir = sd.getCurrentDir();
     final StorageType storageType =
         getStorageTypeFromLocations(dataLocations, sd.getRoot());
@@ -645,7 +645,7 @@ FsDatasetFactory#newInstance()：
   }
 ```
 
-初始化DataStorage的过程中，将各`${dfs.data.dir}`放入了storage（即DataNode#storage）。对于datanode来说，`${dfs.data.dir}/current`目录就是要添加的卷FsVolumeImpl。
+初始化DataStorage的过程中，将各`${dfs.datanode.data.dir}`放入了storage（即DataNode#storage）。对于datanode来说，`${dfs.datanode.data.dir}/current`目录就是要添加的卷FsVolumeImpl。
 
 ## FsDatasetImpl#initPeriodicScanners()
 
