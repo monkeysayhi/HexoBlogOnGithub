@@ -604,7 +604,7 @@ BlockManager#computeInvalidateWork()遍历`需要删除数据块缓冲区BlockMa
 
 namenode对副本复制和副本删除做了一些简单的“流控”（将工作理解为网络流量，对工作数的控制）：
 
-* 对副本复制：**限制每批次进行副本复制的数据块总数**，最多为集群存活datanode总数的`${dfs.namenode. replication.work.multiplier.per.iteration}`倍，默认为2。
+* 对副本复制：**限制每批次进行副本复制的数据块总数**，最多为集群存活datanode总数的`${dfs.namenode.replication.work.multiplier.per.iteration}`倍，默认为2。
 * 对副本删除：**限制每批次进行副本删除涉及的datanode总数**，最多为集群存活datanode总数的`${dfs.namenode.invalidate.work.pct.per.iteration}`倍，默认为32%；**限制每批次涉及的每个datanode上删除的副本总数**，最多为`${dfs.block.invalidate.limit}`，默认为1000。
 
 例如集群有1000个存活节点，使用默认参数，则每批次最多创建`1000 * 2 = 2000`个数据块的副本复制工作，最多创建`1000 * 32% * 1000 = 32w`个副本。
