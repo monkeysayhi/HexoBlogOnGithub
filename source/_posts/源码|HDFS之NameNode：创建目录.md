@@ -29,7 +29,7 @@ namenode主要负责文件元信息的管理和文件到数据块的映射。其
 
 1. 客户端通过ClientProtocol协议向RpcServer发起创建目录的RPC请求。
 2. FSNamesystem封装了各种HDFS操作的实现细节，RpcServer调用FSNamesystem中的相关方法以创建目录。
-3. 进一步的，FSDirectory封装了各种目录树操作的实现细节，FSNamesystem调用FSDirectory中的相关方法在目录树中创建目标目录，并通过日志系统备份文件系统的元信息。
+3. 进一步的，FSDirectory封装了各种目录树操作的实现细节，FSNamesystem调用FSDirectory中的相关方法在目录树中创建目标目录，并通过日志系统备份文件系统的修改。
 4. 最后，RpcServer将RPC响应返回给客户端。
 
 创建目录的RPC接口为ClientProtocol#mkdirs()：
@@ -422,6 +422,7 @@ INodeDirectory#addChild()：
 namenode创建目录的过程只涉及文件元信息的操作，逻辑相对简单。概括起来，需掌握几个点：
 
 * 各关键组件的交互方式：
-    * FSNamesystem中的`“mkdirs - mkdirsInt - mkdirsInternal”`三级结构。延伸到最外层与NameNodeRpcServer交互的NameNodeRpcServer#mkdirs()，与最内层封装FSDirectory等组件的FSNamesystem#mkdirsRecursively()。
-    * `"FSDirectory#unprotectedMkdir() + FSNamesystem#getEditLog#logMkDir()"`组合
+    * 最外层：NameNodeRpcServer#mkdirs()简单检查，主要逻辑交给FSNamesystem#mkdirs()。
+    * 中间层：FSNamesystem中的`“mkdirs - mkdirsInt - mkdirsInternal”`三级结构。
+    * 最内层：FSNamesystem最终封装`"FSDirectory#unprotectedMkdir() + FSEditLog#logMkDir()"`组合。
 * INodesInPath的结构与用法，特别是INodesInPath#inodes的用法
