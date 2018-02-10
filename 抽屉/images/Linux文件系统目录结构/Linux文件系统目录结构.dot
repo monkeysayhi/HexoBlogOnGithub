@@ -1,0 +1,76 @@
+digraph {
+	"/"
+
+	"/" -> "/bin"
+	# "/" -> "/boot"
+	# "/" -> "/dev"
+	"/" -> "/etc"
+	"/" -> "/home"
+	"/" -> "/lib"
+	# "/" -> "/lost+found"
+	# "/" -> "/media"
+	# "/" -> "/mnt"
+	# "/" -> "/opt"
+	"/" -> "/proc"
+	"/" -> "/root"
+	"/" -> "/sbin"
+	"/" -> "/tmp"
+	"/" -> "/usr"
+	"/" -> "/var"
+
+	subgraph proc {
+		"/proc" [color = "red"]
+		node [shape = "box", color = "red"]
+
+		"/proc" -> "/proc/cpuinfo"
+		# "/proc" -> "/proc/devices"
+		# "/proc" -> "/proc/meminfo"
+		# "/proc" -> "/proc/stat"
+		# "/proc" -> "/proc/swaps"
+		"/proc" -> "/proc/version"
+		# "/proc" -> "/proc/bus"
+		# "/proc" -> "/proc/net"
+
+		"/proc" -> "/proc/<pid>"
+
+		subgraph proc_pid {
+
+			# "/proc/<pid>" -> "/proc/<pid>/cgroup"
+			"/proc/<pid>" -> "/proc/<pid>/cmdline"
+			"/proc/<pid>" -> "/proc/<pid>/cwd"
+			"/proc/<pid>" -> "/proc/<pid>/environ"
+			"/proc/<pid>" -> "/proc/<pid>/exe"
+			"/proc/<pid>" -> "/proc/<pid>/fd" -> "/proc/<pid>/fd/<fid>"
+			# "/proc/<pid>" -> "/proc/<pid>/io"
+			"/proc/<pid>" -> "/proc/<pid>/limits"
+			# "/proc/<pid>" -> "/proc/<pid>/maps"
+			# "/proc/<pid>" -> "/proc/<pid>/status"
+			"/proc/<pid>" -> "/proc/<pid>/task" -> "/proc/<pid>/task/<tid>"
+
+			"/proc/<pid>/fd" [shape = "ellipse"]
+		}
+
+		"/proc/<pid>" [shape = "ellipse"]
+	}
+	
+	subgraph usr {
+		"/usr" -> "/usr/bin"
+		# "/usr" -> "/usr/etc"
+		"/usr" -> "/usr/include"
+		"/usr" -> "/usr/lib"
+		"/usr" -> "/usr/local"
+		"/usr" -> "/usr/sbin"
+		# "/usr" -> "/usr/share"
+	}
+
+	subgraph var {
+		"/var" [color = "blue"]
+		node [color = "blue"]
+
+		"/var" -> "/var/log"
+
+		"/var/log" -> "/var/log/messages"
+
+		"/var/log/messages" [shape = "box"]
+	}
+}
