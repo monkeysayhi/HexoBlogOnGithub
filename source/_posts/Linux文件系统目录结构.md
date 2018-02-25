@@ -59,7 +59,9 @@ Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系
 | /proc/cpuinfo | 处理器的相关信息 | physical id、cpu cores、siblings、processor |
 | /proc/version | 系统的内核版本号 | Linux version 3.10.0 |
 
->`/proc/version`确定内核版本号；`/etc/centos-release`确定发行版本号（其他发行版类似）。
+>`/proc/version`确定内核版本号和CPU架构（如i686）；`/etc/centos-release`确定发行版本号（其他发行版类似）。
+>
+>`uname -a`与`cat /proc/version`的作用类似。
 
 ### 进程信息
 
