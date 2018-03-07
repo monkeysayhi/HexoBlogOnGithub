@@ -175,7 +175,8 @@ B树的增删过程暂时可参考[从B树、B+树、B*树谈到R 树](http://bl
 
 ---
 
-参考：
-
-* [从B树、B+树、B*树谈到R 树](http://blog.csdn.net/v_JULY_v/article/details/6530142/)
-* [MySQL索引原理及慢查询优化](https://tech.meituan.com/mysql-index.html)
+>参考：
+>
+>* [从B树、B+树、B*树谈到R 树](http://blog.csdn.net/v_JULY_v/article/details/6530142/)
+>* [MySQL索引原理及慢查询优化](https://tech.meituan.com/mysql-index.html)
+>
