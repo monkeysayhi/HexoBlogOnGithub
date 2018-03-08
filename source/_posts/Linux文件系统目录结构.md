@@ -79,8 +79,8 @@ Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系
 
 补充几点：
 
-* `cat /proc/version`查看内核版本号；`cat /etc/centos-release`查看发行版本号（其他发行版类似）。
 * 通过ulimit来查看或修改当前进程的资源限制。
+* 软限制可以由进程自己在任何时间修改；硬限制只能使用root权限修改。
 * Linux上进程与线程的关系参考[浅谈linux线程模型和线程切换](/2017/11/29/浅谈linux线程模型和线程切换/)。
 
 ## /var目录
@@ -106,23 +106,17 @@ Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系
 
 猴子利用`/var/log/messages`定位过一次OOM kill问题。
 
-一个用户经常抱怨自己的app提到Yarn后，container各种exit 137然后重试。假设框架不会自己exit 137玩，那么通常137代表container是因为kill -9退出，于是mentor提示猴子可能因为OOM kill。要验证这个想法，至少需要两个证据：
+一个用户经常抱怨自己的app提到Yarn后，container各种exit 137然后重试。假设框架不会自己exit 137玩，那么通常137代表container是因为kill -9退出，于是mentor提示猴子可能因为OOM kill。要验证这个想法，必须找到“相关container被OOM kill的痕迹”。
 
-1. 找到container被OOM kill的痕迹。
-2. `ExitCodeStatus == 137`对应OOM kill的情况。
+Linux会监控内存使用情况，当内存不足的时候，OOM killer计算进程的优先级，杀死优先级最高的进程释放内存。而Yarn集群普遍会配置资源超发（Linux系统本身也存在内存超发），当集群资源紧张的时候，大container很容易被OOM kill。
 
->Linux会监控内存使用情况，当内存不足的时候，OOM killer计算进程的优先级，杀死优先级最高的进程释放内存。而Yarn集群普遍会配置资源超发（Linux系统本身也存在内存超发），当集群资源紧张的时候，大container很容易被OOM kill。
-
-证据1很容易，“发现内存不足”、“计算优先级”、“选择进程kill”的过程都会记录在`/var/log/messages`中，猴子确实在用户给定的时间点附近找到了对应container的OOM kill日志，内存也与container申请的资源相近。
-
-证据2结合源码+实验确定`ExitCodeStatus == 137`对应“container被外部kill -9”的情况。通常集群不会被人直接kill -9，可以认为绝大部分外部kill -9都是因为OOM kill。
+**OOM kill的三个步骤“发现内存不足”、“计算优先级”、“选择进程kill”，都会记录在`/var/log/messages`中**，猴子确实在用户给定的时间点附近找到了对应container的OOM kill日志，内存也与container申请的资源相近。
 
 得证。
 
 >判断过程中存在一些小问题：
 >
 >* 猴子根据container被OOM kill的时间点和内存判断是否是目标进程，未严格确定。
->* 源码+实验仅能确定`ExitCodeStatus == 137`包括OOM kill的情况，未验证是否存在其他外部kill。
 >
 
 # 个人使用时的建议
