@@ -47,7 +47,7 @@ Can you solve it without using extra space?
 
 ### follow up
 
->确定环入口入口的位置
+>确定环入口的位置
 
 和basic problem一样，可以用hash表解决。而follow up的目的仍然是希望O(1)的space解决：
 
@@ -73,7 +73,7 @@ Can you solve it without using extra space?
 
 >PS：代码实现时，需要关注m、n、k等计算时是否包含head、entrance等，但证明时无需关心，仅仅是加减一个常数项的事情。
 
-**fast的速度是slow的两倍**。则，fast第一次到entrance时，slow到达链表中部节点mid，设head到mid共有s个节点，则此时，slow走了s个节点，fast走了2s个节点。我们让slow再走s个节点，fast再走2s个节点，分情况讨论：
+**fast的速度是slow的两倍**。则，fast第一次到entrance时（“第一次”指通过“环”到达entrance），slow到达链表中部节点mid，设head到mid共有s个节点，则此时，slow走了s个节点，fast走了2s个节点。我们让slow再走s个节点，fast再走2s个节点，分情况讨论：
 
 #### 如果entrance等于head
 
@@ -84,6 +84,8 @@ Can you solve it without using extra space?
 此情况下，环均比第一种情况短。重复上述过程，slow仍然有且仅有一次从mid走到entrance，但fast却由于环的缩短，可能不止一次与slow相遇并走到entrance。我们只关注第一次相遇，显然，*第一次相遇仍然发生在slow第一次入环的过程中*。
 
 得证。
+
+>当然，相遇点也在mid于entrance之间。
 
 ### 如何寻找入口节点
 
@@ -97,9 +99,9 @@ Can you solve it without using extra space?
 * `m`为环的长度
 * `m-k`为从fast、slow的相遇点到entrance的节点数
 
-如果让slow继续走`m-k`个节点，此时slow将恰好位于entrance；再循环`y = x-1`圈，仍然处于entrance。增加一个新的指针`p = head`，则可以这样理解上式：**使p和slow同时开始移动（slow从刚才的相遇点开始），都一次移动一个位置，则当p第一次经过n个节点走到entrance时，slow恰好先经过了`m-k`个节点，再走了整y圈回到entrance**。
+如果让slow继续走`m-k`个节点，此时slow将恰好位于entrance；再循环`y = x-1`圈，仍然处于entrance。增加一个新的指针`p = head`，则可以这样理解上式：**使p和slow同时开始移动（slow从刚才的相遇点开始），均每次移动一个位置，则当p第一次经过n个节点走到entrance时，slow恰好先经过了`m-k`个节点，再走了整y圈回到entrance**。
 
-此时，p与slow相遇，相遇点即为entrance。
+也就是说，**p与slow的第一个相遇点为entrance**。
 
 # 代码
 
