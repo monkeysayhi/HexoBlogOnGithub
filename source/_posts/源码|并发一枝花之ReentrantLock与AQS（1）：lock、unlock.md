@@ -441,6 +441,9 @@ ReentrantLock#lock()收敛后，AQS内部的等待队列如图：
 
 ![lock稳定状态](../../qiniu/static/images/源码|并发一枝花之ReentrantLock与AQS（1）：lock、unlock/lock稳定状态.png)
 
+* 除了头节点，剩余节点都被阻塞，线程处于`WAITING`状态。
+* 除了尾节点，剩余节点都满足`waitStatus==SIGNAL`，表示释放后需要唤醒后继节点。
+
 ## unlock
 
 ReentrantLock#unlcok()与ReentrantLock#lcok()是对偶的。
@@ -629,6 +632,8 @@ public abstract class AbstractQueuedSynchronizer
 ReentrantLock#unlock()收敛后，AQS内部的等待队列如图：
 
 ![unlock稳定状态](../../qiniu/static/images/源码|并发一枝花之ReentrantLock与AQS（1）：lock、unlock/unlock稳定状态.png)
+
+与lock收敛后的状态相同。
 
 # 总结
 
