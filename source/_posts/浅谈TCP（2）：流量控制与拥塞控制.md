@@ -190,13 +190,13 @@ _LastByteRcvd还可能指向Seq(LastByteAcked)（一个新包都没有收到）_
 丢包后，有两种重传方式，对应不同的网络情况，也就对应着两种拥塞发生时的控制算法：
 
 1.  超时重传。TCP认为这种情况太糟糕，调整力度比较大：
-    1. sshthresh =  cwnd /2
+    1. ssthresh =  cwnd /2
     2. cwnd = 1，重新进入慢启动过程（网络糟糕，要慢慢调整）
 2. 快速重传。TCP认为这种情况通常比RTO超时好一些，主流实现TCP Reno的调整力度更柔和（TCP Tahoe的实现和RTO超时一样暴躁）：
-    1. sshthresh =  cwnd /2
+    1. ssthresh =  cwnd /2
     2. cwnd = cwnd /2，进入快速恢复算法（网络没那么糟，可以快速调整，见下）
 
-可以看到，不管是哪种重传方式，sshthresh都会变成cwnd的一半，仍然是_指数回退，待拥塞消失后再逐渐增长回到新的最优值_，总体上在最优值（动态）附近震荡。
+可以看到，不管是哪种重传方式，ssthresh都会变成cwnd的一半，仍然是_指数回退，待拥塞消失后再逐渐增长回到新的最优值_，总体上在最优值（动态）附近震荡。
 
 回退后，根据不同的网络情况，可以选择不同的恢复算法。慢启动已经介绍过了，下面介绍快速恢复算法。
 
@@ -206,15 +206,15 @@ _LastByteRcvd还可能指向Seq(LastByteAcked)（一个新包都没有收到）_
 
 回顾一下，进入快速恢复之前，cwnd和sshthresh已被更新：
 
-1. sshthresh = cwnd /2
+1. ssthresh = cwnd /2
 2. cwnd = cwnd /2
 
 然后，进入快速恢复算法：
 
-1. cwnd = sshthresh  + 3 * MSS （尝试一步到位）
+1. cwnd = ssthresh  + 3 * MSS （尝试一步到位）
 2. 重传重复Ack对应的Seq
 3. 如果再收到该重复Ack，则cwnd++，线性增长（缓慢调整）
-4. 如果收到了新Ack，则cwnd = sshthresh ，然后就进入了拥塞避免的算法了（<font color="red">**为什么收到新Ack要降低sshthresh？？？**</font>）
+4. 如果收到了新Ack，则cwnd = ssthresh ，然后就进入了拥塞避免的算法了（<font color="red">**为什么收到新Ack要降低sshthresh？？？**</font>）
 
 >可暂时忽略的内容：
 >
