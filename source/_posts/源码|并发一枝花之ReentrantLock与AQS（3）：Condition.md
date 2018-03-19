@@ -135,12 +135,12 @@ public abstract class AbstractQueuedSynchronizer
 ConditionObject#await()同ReentrantLock#lockInterruptibly()一样，都是可中断的：调用ConditionObject#await()后，当前线程将保持阻塞，直到收到信号或被中断。
 
 1. 主动检查中断，及时抛出InterruptedException。
-*  创建等待节点并放入队尾
-*  释放锁，并保存释放前的锁状态（ownerThread的重入次数）
-*  阻塞，直到收到信号或被中断
-*  重新申请锁，并更新中断模式
-*  移除已被取消的节点
-*  如果之前发生了中断，则根据中断模式重放中断
+2. 创建等待节点并放入队尾
+3. 释放锁，并保存释放前的锁状态（ownerThread的重入次数）
+4. 阻塞，直到收到信号或被中断
+5. 重新申请锁，并更新中断模式
+6. 移除已被取消的节点
+7. 如果之前发生了中断，则根据中断模式重放中断
 
 下面详细分析。
 
