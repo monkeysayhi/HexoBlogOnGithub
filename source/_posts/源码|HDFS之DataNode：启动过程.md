@@ -500,7 +500,7 @@ DataNode#initBlockPool()：
   void initBlockPool(BPOfferService bpos) throws IOException {
     ...// 略
 
-    // 将blockpool注册到BlockManager
+    // 将blockpool注册到BlockPoolManager
     blockPoolManager.addBlockPool(bpos);
     
     // 初步初始化存储结构
@@ -516,7 +516,7 @@ DataNode#initBlockPool()：
   }
 ```
 
-此时可知，**blockpool是按照namespace逐个初始化的**。这很必要，因为要支持Federation的话，就必须让多个namespace既能共用BlockManager提供的数据块存储服务，又能独立启动、关闭、升级、回滚等。
+此时可知，**blockpool是按照namespace逐个初始化的**。这很必要，因为要支持Federation的话，就必须让多个namespace既能共用BlockPoolManager提供的数据块存储服务，又能独立启动、关闭、升级、回滚等。
 
 ## DataNode#initStorage()
 
