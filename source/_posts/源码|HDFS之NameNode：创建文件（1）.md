@@ -631,7 +631,7 @@ HDFS 1.x中，处于“正在写”状态的文件使用INodeFileUnderConstructi
 
 对于处于UnderConstruction状态的文件而言，通常文件关联的最后一个数据块处于数据块的UnderConstruction状态。
 
->以上是官方对Feature抽象的解释。不过，猴子认为与快照、quota等功能特性相比，UnderConstruction不能算作一个feature，而应该作为INodeFile的一个状态，将对该状态的处理封装在INode内部。
+>以上是官方对Feature抽象的解释。不过，猴子认为与快照、quota等功能特性相比，UnderConstruction不能算作一个feature，而应该作为INodeFile的一个状态，将对该状态的处理封装在INodeFile内部。
 
 #### 加入目录树与FSDirectory#inodeMap：FSDirectory#addINode()
 
@@ -750,7 +750,7 @@ FSDirectory#getFileInfo()：
 
 在创建文件的流程中，执行该方法时，*节点已经成功创建并添加到目录树中*（理想）。因此，INodesInPath#inodes[-1]即刚刚创建的文件节点。然后根据相关信息创建FileStatus并返回。
 
-FSDirectory#createFileStatus()的实现告诉了我们一个很重要的信息：_HDFS并没有存储FileStatus，而是在每次查询时创建_。这在某些时候与我们的直觉相悖，不过考虑到单集群上千节点元信息对namenode造成的内存压力，“**尽量减少单节点冗余信息**”的实现方式就合理了。
+FSDirectory#createFileStatus()的实现告诉了我们一个很重要的信息：_HDFS并没有存储FileStatus，而是在每次查询时创建_。这在某些时候与我们的直觉相悖，不过考虑到单集群上千节点元信息对namenode造成的内存压力，“**尽量减少冗余信息**”的实现方式就合理了。
 
 >FSDirectory#getFileInfo()方法还被RPC方法NameNodeRpcServer#getFileInfo()调用，而查询的目标路径可能不存在文件节点，对应INodesInPath#inodes[-1]为null（参考创建目录过程中对INodesInPath用法的分析）。因此15行需要判断null的逻辑。
 
@@ -859,7 +859,7 @@ BlockManager#removeBlock()：
 
 方法主要分为两部分：
 
-1. 将待删除数据块加入`正在删除数据块缓冲区BlockManager#invalidateBlocks`，表示需要删除该数据块（根据[源码|HDFS之NameNode：启动过程](/2018/02/01/源码|HDFS之NameNode：启动过程/)，BlockManager#ReplicationMonitor线程定时扫描缓冲区，生成副本删除任务，随心跳下发到datanode）。
+1. 直接将待删除数据块加入`正在删除数据块缓冲区BlockManager#invalidateBlocks`，表示需要删除该数据块（根据[源码|HDFS之NameNode：启动过程](/2018/02/01/源码|HDFS之NameNode：启动过程/)，BlockManager#ReplicationMonitor线程定时扫描缓冲区，生成副本删除任务，随心跳下发到datanode；此处跳过了`需要删除数据块缓冲区BlockManager#excessReplicateMap`）。
 2. 将待删除数据块从`已损坏数据块缓冲区BlockManager#corruptReplicas`、`几乎全量数据块缓冲区BlockManager#blocksMap`、`需要复制数据块缓冲区BlockManager#neededReplications`、`正在复制数据块缓冲区BlockManager#pendingReplications`中移除，表示除删除外，不再需要对该数据块作出任何处理。
 
 对其他缓冲区：租约已经删除，对于namenode来说，已不存在“正在写”状态的数据块；也不需要从`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`中移除数据块，因为有工作线程能定期扫描BlockManager#pendingReplications#timedOutItems，发现数据块已经不需要再复制，就直接删除了。
@@ -868,8 +868,8 @@ BlockManager#removeBlock()：
 
 >猴子有两个疑问没解决：
 >
->* 没看懂block.setNumBytes的作用，可能与数据块汇报有关？
->* 为什么不及时将数据块从`需要删除数据块缓冲区BlockManager#excessReplicateMap`中移除？尽管不删除也不会影响正确性，但可能导致多发出一个无效命令。
+>* <font color="red">没看懂block.setNumBytes的作用，可能与数据块汇报有关？</font>
+>* <font color="red">为什么跳过`需要删除数据块缓冲区BlockManager#excessReplicateMap`的逻辑？为什么不及时将数据块从`需要删除数据块缓冲区BlockManager#excessReplicateMap`中移除？</font>现在的方案可能导致多发出一个无效命令，尽管带来的损耗非常小。
 >
 
 # 总结
