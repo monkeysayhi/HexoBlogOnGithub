@@ -437,7 +437,7 @@ PendingReplicationMonitor#run()：
     }
 ```
 
-遍历`正在复制数据块缓冲区BlockManager#pendingReplications`，_如果发现有数据块超时，则将数据块添加到`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`_。
+_遍历`正在复制数据块缓冲区BlockManager#pendingReplications`，如果发现有数据块超时，则将数据块添加到`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`_。
 
 >超时指超过`${dfs.namenode.replication.pending.timeout-sec}`毫秒（尽管后缀是“sec”，但代码逻辑是毫秒）仍没有收到副本复制成功的响应。
 
@@ -598,18 +598,18 @@ BlockManager#computeDatanodeWork()：
   }
 ```
 
-BlockManager#computeReplicationWork()遍历`需要复制数据块缓冲区BlockManager#neededReplications`，计算可进行副本复制的任务，放入`正在复制数据块缓冲区BlockManager#pendingReplications`，最后返回任务数。
+BlockManager#computeReplicationWork()_遍历`需要复制数据块缓冲区BlockManager#neededReplications`，计算可进行副本复制的任务，放入`正在复制数据块缓冲区BlockManager#pendingReplications`_，最后返回任务数。
 
-BlockManager#computeInvalidateWork()遍历`需要删除数据块缓冲区BlockManager#excessReplicateMap`，计算可进行副本删除的任务，放入`正在删除数据块缓冲区BlockManager#invalidateBlocks`，最后返回任务数。
+BlockManager#computeInvalidateWork()_遍历`需要删除数据块缓冲区BlockManager#excessReplicateMap`，计算可进行副本删除的任务，放入`正在删除数据块缓冲区BlockManager#invalidateBlocks`_，最后返回任务数。
 
-namenode对副本复制和副本删除做了一些简单的“流控”（将工作理解为网络流量，对工作数的控制）：
+**namenode对副本复制和副本删除做了一些简单的“流控”**（将工作理解为网络流量，对工作数的控制）：
 
 * 对副本复制：**限制每批次进行副本复制的数据块总数**，最多为集群存活datanode总数的`${dfs.namenode.replication.work.multiplier.per.iteration}`倍，默认为2。
 * 对副本删除：**限制每批次进行副本删除涉及的datanode总数**，最多为集群存活datanode总数的`${dfs.namenode.invalidate.work.pct.per.iteration}`倍，默认为32%；**限制每批次涉及的每个datanode上删除的副本总数**，最多为`${dfs.block.invalidate.limit}`，默认为1000。
 
-例如集群有1000个存活节点，使用默认参数，则每批次最多创建`1000 * 2 = 2000`个数据块的副本复制工作，最多创建`1000 * 32% * 1000 = 32w`个副本。
+例如集群有1000个存活节点，使用默认参数，则每批次最多创建`1000 * 2 = 2000`个数据块的副本复制工作，最多删除`1000 * 32% * 1000 = 32w`个副本。
 
-可以看到，副本复制的任务数上限远大于副本删除。这是因为，副本复制需要在datanode之间复制数据块，占用大量网络资源，如果不限制同时进行的副本复制任务数，很容易造成网络拥塞，影响整个集群的性能；而副本删除只涉及datanode内部的操作，甚至，对于大部分操作系统而言，文件remove操作只需要操作类似文件分配表（File Allocation table，FAT）的结构，成本非常小。
+可以看到，副本复制的任务数上限远小于副本删除。这是因为，副本复制需要在datanode之间复制数据块，占用大量网络资源，如果不限制同时进行的副本复制任务数，很容易造成网络拥塞，影响整个集群的性能；而副本删除只涉及datanode内部的操作，甚至，对于大部分操作系统而言，文件remove操作只需要操作类似文件分配表（File Allocation Table，FAT）的结构，成本非常小。
 
 ## BlockManager#processPendingReplications()
 
@@ -648,7 +648,7 @@ BlockManager#processPendingReplications()：
   }
 ```
 
-BlockManager#processPendingReplications()每次都_从`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`中取出全部的复制超时数据块，如果这些数据块还需要被复制，则将其重新加入`需要复制数据块缓冲区BlockManager#neededReplications`_。等待BlockManager#ReplicationMonitor线程在下一批次计算这些副本复制任务。
+BlockManager#processPendingReplications()每次都_遍历`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`取出全部的复制超时数据块，如果这些数据块还需要被复制，则将其重新加入`需要复制数据块缓冲区BlockManager#neededReplications`_。等待BlockManager#ReplicationMonitor线程在下一批次计算这些副本复制任务。
 
 至此，namenode启动流程的源码已经走完。
 
@@ -656,7 +656,7 @@ BlockManager#processPendingReplications()每次都_从`复制超时数据块缓�
 
 datanode的主要责任是数据块（文件内容）的读写，因此，datanode的启动流程主要关注的是与客户端、namenode通信的工作线程，底层的存储管理机制等。
 
-而**namenode的主要责任是文件元信息与数据块映射的管理**。相应的，namenode的启动流程需要关注与客户端、datanode通信的工作线程，文件元信息的管理机制，数据块的管理机制等。其中，RpcServer主要负责与客户端、datanode通信，FSDirectory主要负责管理文件元信息，二者中的难点分别为RPC机制和命名空间备份机制，本文简单提及，没有深入。重点笔墨放在了namenode对数据块的管理上，即*namenode上数据块的关键状态转换*：
+而**namenode的主要责任是文件元信息与数据块映射的管理**。相应的，namenode的启动流程需要关注与客户端、datanode通信的工作线程，文件元信息的管理机制，数据块的管理机制等。其中，RpcServer主要负责与客户端、datanode通信，FSDirectory主要负责管理文件元信息，二者中的难点分别为RPC机制和命名空间备份机制，本文简单提及，后文分析创建目录、写文件、删文件、读文件等流程时再深入。重点笔墨放在了namenode对数据块的管理上，即*namenode上数据块的关键状态转换*（写文件等流程中继续补充）：
 
 ![NNBlock](../../qiniu/static/images/源码|HDFS之NameNode：启动过程/NNBlock.png)
 
@@ -667,8 +667,9 @@ datanode的主要责任是数据块（文件内容）的读写，因此，datano
 * 开始状态为`complete`（因为我们还没有分析namenode上的写数据块流程），结束状态为`complete`或`none`。
 * `none`表示删除后的状态。
 * 除`none状态`外，各状态对应着总览中的各缓冲区。
+* 红线组成了副本复制的关键流程；蓝线组成了副本删除的关键流程。
 
-红线组成了副本复制的关键流程；蓝线组成了副本删除的关键流程。与副本复制流程相比，副本删除流程不需要区分`timeout状态`的数据块（类似`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`），更不需要区分删除失败等状态。这是因为，**副本删除命令被发出后，namenode即认为副本删除成功**；_如果实际上删除失败（超时等原因），datanode必然会再次汇报目标数据块，namenode发现已经有足够的存活副本，则将目标数据块再次加入`需要删除数据块缓冲区BlockManager#excessReplicateMap`，即数据块再次转为`excess_replicate状态`_。
+与副本复制流程相比，副本删除流程不需要区分`timeout状态`的数据块（类似`复制超时数据块缓冲区BlockManager#pendingReplications#timedOutItems`），更不需要区分删除失败等状态。这是因为，**副本删除命令被发出后，namenode即认为副本删除成功**；_如果实际上删除失败（超时等原因），datanode必然会再次汇报目标数据块，namenode发现已经有足够的存活副本，则将目标数据块再次加入`需要删除数据块缓冲区BlockManager#excessReplicateMap`，即数据块再次转为`excess_replicate状态`_。可结合[源码|HDFS之DataNode：写数据块（1）](/2018/01/19/源码|HDFS之DataNode：写数据块（1）/)中的BPOfferService#notifyNamenodeReceivedBlock()方法相关逻辑分析。
 
 >此处并不是完整的`NNBlock状态机`（仿照Yarn中RMApp的命名），随着以后的分析，还要引入“数据块正在写”、“数据块损坏”等状态。
 
