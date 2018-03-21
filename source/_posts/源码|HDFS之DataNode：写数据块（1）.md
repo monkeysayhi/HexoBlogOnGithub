@@ -896,7 +896,7 @@ BPServiceActor#notifyNamenodeBlock()：
     }
 ```
 
->猴子没明白19-22行的synchronized语句块有什么用，，，求解释。
+>猴子没明白21-24行的synchronized语句块有什么用，，，求解释。
 
 # BPServiceActor线程
 
@@ -920,11 +920,11 @@ BPServiceActor#notifyNamenodeBlock()：
         } // synchronized
 ```
 
->可能有读者阅读过猴子的[条件队列大法好：使用wait、notify和notifyAll的正确姿势](/2017/11/29/条件队列大法好：使用wait、notify和notifyAll的正确姿势/)，认为此处`if(){wait}`的写法姿势不正确。读者可再复习一下该文的“version2：过早唤醒”部分，结合HDFS的心跳机制，思考一下为什么此处的写法没有问题。更甚，此处恰恰应当这么写。
+>可能有读者阅读过猴子的[条件队列大法好：使用wait、notify和notifyAll的正确姿势](/2017/11/29/条件队列大法好：使用wait、notify和notifyAll的正确姿势/)，认为此处`if(){wait}`的写法姿势不正确。读者可再复习一下该文的“version2：过早唤醒”部分，结合HDFS的心跳机制，思考一下为什么此处的写法没有问题。更甚，**此处恰恰应当这么写**。
 
-如果目前不需要汇报，则BPServiceActor线程会wait一段时间，正式这段wait的时间，让BPServiceActor#notifyNamenodeBlock()的唤醒产生了意义。
+如果目前不需要汇报，则BPServiceActor线程会wait一段时间，正是这段wait的时间，让BPServiceActor#notifyNamenodeBlock()的唤醒产生了意义。
 
-BPServiceActor线程唤醒后，醒来后，继续心跳循环：
+BPServiceActor线程被唤醒后，继续心跳循环：
 
 ```java
     while (shouldRun()) {
@@ -958,7 +958,9 @@ BPServiceActor线程唤醒后，醒来后，继续心跳循环：
 
 >有意思的是，这里先单独汇报了一次数据块收到和删除的情况，该RPC不需要等待namenode的返回值；又汇报了一次总体情况，此时需要等待RPC的返回值了。
 >
->因此，尽管对于增删数据块采取增量式汇报，但**由于增量式汇报后必然跟着一次全量汇报，使得增量汇报的成本仍然非常高**。为了提高并发，BPServiceActor#notifyNamenodeBlock修改缓冲区后立即返回，不关心汇报是否成功。也不必担心汇报失败的后果：在汇报之前，数据块已经转为FINALIZED状态+持久化到磁盘上+修改了缓冲区，如果汇报失败可以等待重试，如果datanode在发报告前挂了可以等启动后重新汇报，必然能保证一致性。
+>因此，尽管对于增删数据块采取增量式汇报，但**由于增量式汇报后必然跟着一次全量汇报，使得增量汇报的成本仍然非常高**。
+>
+>为了提高并发，BPServiceActor#notifyNamenodeBlock修改缓冲区后立即返回，**不必关心汇报是否成功。也不必担心汇报失败的后果，必然能保证一致性**：在汇报之前，数据块已经转为FINALIZED状态+持久化到磁盘上+修改了缓冲区，如果“数据块增加”汇报失败可以等待下次心跳重试，如果“数据块删除”汇报失败无所谓（Namenode上早就删除了该数据块的元信息），如果datanode在发报告前挂了可以等启动后重新汇报“数据块增加”，不需汇报“数据块删除”。
 
 暂时不关心总体汇报的逻辑，只看单独汇报的BPServiceActor#reportReceivedDeletedBlocks()：
 
@@ -1013,9 +1015,9 @@ BPServiceActor线程唤醒后，醒来后，继续心跳循环：
 有两个注意点：
 
 * 不管namenode处于active或standy状态，BPServiceActor线程都会汇报（尽管会忽略standby namenode的命令）
-* 最后success为false时，可能namenode已收到汇报，但将信息添加会缓冲区导致重复汇报也没有坏影响，这分为两个方面：
-    * 重复汇报已删除的数据块：namenode发现未存储该数据块的信息，则得知其已经删除了，会忽略该信息。
-    * 重复汇报已收到的数据块：namenode发现新收到的数据块与已存储数据块的信息完全一致，也会忽略该信息。
+* 最后success为false时，可能namenode已收到汇报，但将信息添加回缓冲区导致重复汇报也没有坏影响：
+    * 如果重复汇报已删除的数据块：namenode发现未存储该数据块的信息，则得知其已经删除了，会忽略该信息。
+    * 如果重复汇报已收到的数据块：namenode发现新收到的数据块与已存储数据块的信息完全一致，也会忽略该信息。
 
 # 总结
 
