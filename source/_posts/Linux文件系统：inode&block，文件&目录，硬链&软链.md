@@ -91,6 +91,10 @@ Linux系统**使用inode号来识别文件**，文件名仅仅是文件的别名
 261774 example.txt
 ```
 
+## inode到block的映射
+
+><font color="red">// TODO: 操作系统讲过，待考证</font>。
+
 # 文件 & 目录
 
 ## 文件
