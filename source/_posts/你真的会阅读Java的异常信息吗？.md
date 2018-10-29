@@ -13,7 +13,7 @@ date: 2017-10-02 14:19:56
 java.lang.RuntimeException: level 2 exception
 	at com.msh.demo.exceptionStack.Test.fun2(Test.java:17)
 	at com.msh.demo.exceptionStack.Test.main(Test.java:24)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorIm猴子pl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:498)
@@ -100,7 +100,7 @@ public class Test {
 
 这经常发生于服务器应用的日志中，由于相同异常已被打印多次，如果继续打印相同异常，JVM会省略掉细节信息和路径队列，**向前翻阅即可找到完整的异常信息**。
 
->猴哥之前使用Yarn的Timeline Server时遇到过该问题。你能体会那种感觉吗？卧槽，为什么只有异常名没有异常栈？没有异常栈怎么老子怎么知道哪里抛出的异常？线上服务老子又不能停，全靠日志了啊喂！
+>猴子之前使用Yarn的Timeline Server时遇到过该问题。你能体会那种感觉吗？卧槽，为什么只有异常名没有异常栈？没有异常栈怎么老子怎么知道哪里抛出的异常？线上服务老子又不能停，全靠日志了啊喂！
 
 网上有不少相同的case，比如[NullPointerException丢失异常堆栈信息](http://blog.csdn.net/taotao4/article/details/43918131)，读者可以参照这个链接实验一下。
 
