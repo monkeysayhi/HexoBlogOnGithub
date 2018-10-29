@@ -104,7 +104,7 @@ qiniu:
   access_key:
   secret_key:
   dirPrefix: static
-  urlPrefix: http://oh4pp6966.bkt.clouddn.com/static
+  urlPrefix: http://static.msh.tademingzi.com/static
   up_host: http://upload.qiniu.com
   local_dir: qiniu/static
   update_exist: true
