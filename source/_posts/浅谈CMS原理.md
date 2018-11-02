@@ -1,7 +1,7 @@
 ---
 title: 浅谈CMS原理
 tags:
-  - JVM
+  - Java
   - JVM
   - 面试
   - 原创
