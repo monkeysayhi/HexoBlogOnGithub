@@ -66,7 +66,7 @@ reward_wording: 'make a better world for everyone'
 # 支付宝二维码图片地址，跟你设置头像的方式一样。比如：/assets/img/alipay.jpg
 alipay: 
 # 微信二维码图片地址
-weixin:  http://oh4pp6966.bkt.clouddn.com/static/images/_common/weixin_pay_qr_code.png
+weixin:  http://static.msh.tademingzi.com/static/images/_common/weixin_pay_qr_code.png
 
 # Miscellaneous
 # google_analytics: 'UA-88415227-1'
@@ -74,10 +74,10 @@ google_analytics: 'UA-89666809-1'
 favicon: /favicon.png
 
 #你的头像url
-avatar: http://oh4pp6966.bkt.clouddn.com/static/images/_common/avatar.jpg
+avatar: http://static.msh.tademingzi.com/static/images/_common/avatar.jpg
 
 #微信公众号二维码
-weixin_qr_code: http://oh4pp6966.bkt.clouddn.com/static/images/_common/weixin_qr_code.jpg
+weixin_qr_code: http://static.msh.tademingzi.com/static/images/_common/weixin_qr_code.jpg
 
 #是否开启分享
 share_jia: true
