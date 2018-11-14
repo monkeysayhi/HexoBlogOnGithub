@@ -28,14 +28,14 @@ HDFS通过数据流的方式写数据块。
 
 除了客户端，管道中的每一个dn都有两个关键线程：
 
-1. DataXceiver线程：dn上管道流的主线程，负责接收上游的packet，并继续向下游节点管道写（`BlockReceiver#receivePacket()`）。
-2. PacketResponder线程：负责接收下游节点的ack，并继续向上游管道响应。
+1. DataXceiver线程：dn上管道流的主线程，负责**接收上游的packet**，并**继续向下游节点管道写**。（`BlockReceiver#receivePacket()`）。
+2. PacketResponder线程：负责**接收下游节点的ack**，并**继续向上游管道响应**。
 
 作为管道的发起者，也是管道的起点，需要主动写入数据，有三个关键线程：
 
 1. 用户写数据的线程：用户以chunk为粒度向缓冲区写数据，写满一个packet后放入dataQueue。
-2. DataStreamer线程：客户端上管道流的主线程，负责将packet从dataQueue移动到ackQueue，并向下游节点管道写packet。
-3. PacketResponder线程：负责接收下游节点的ack，并移除ackQueue中的packet。
+2. DataStreamer线程：客户端上管道流的主线程，负责**将packet从dataQueue移动到ackQueue**，并**向下游节点管道写packet**。
+3. PacketResponder线程：负责**接收下游节点的ack**，并**移除ackQueue中的packet**。
 
 结合上图，DataXceiver线程、DataStreamer线程维护`in->mirrorOut`方向的packet数据流，PacketResponder线程维护`mirrorIn->replyOut`方向的ack数据流。
 
@@ -53,8 +53,8 @@ HDFS通过数据流的方式写数据块。
 
 # 优缺点
 
-* 优点：如果考虑上客户端，那么管道写的优点是网络负载比较均衡。
-* 缺点：慢节点会成为带宽瓶颈，且整体上延迟更高。
+* 优点：如果考虑上客户端，那么管道写的优点是**网络负载比较均衡**。
+* 缺点：`慢节点`会成为带宽瓶颈，且整体上**延迟更高**。
 
 # 如何优化延迟
 
