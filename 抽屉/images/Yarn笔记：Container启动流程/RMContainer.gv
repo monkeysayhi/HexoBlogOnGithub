@@ -1,0 +1,43 @@
+digraph ResourceManager {
+node [fontsize=12, fontname=Helvetica];
+edge [fontsize=9, fontcolor=blue, fontname=Arial];
+
+subgraph cluster_RMContainer {
+label="RMContainer"
+  "RMContainer.RELEASED" [ label = RELEASED ];
+  "RMContainer.RELEASED" -> "RMContainer.RELEASED" [ label = "EXPIRE,\nRELEASED,\nFINISHED,\nKILL" ];
+  "RMContainer.ACQUIRED" [ label = ACQUIRED ];
+  "RMContainer.ACQUIRED" -> "RMContainer.RUNNING" [ label = "LAUNCHED" ];
+  "RMContainer.ACQUIRED" -> "RMContainer.EXPIRED" [ label = "EXPIRE" ];
+  "RMContainer.ACQUIRED" -> "RMContainer.RELEASED" [ label = "RELEASED" ];
+  "RMContainer.ACQUIRED" -> "RMContainer.COMPLETED" [ label = "FINISHED" ];
+  "RMContainer.ACQUIRED" -> "RMContainer.KILLED" [ label = "KILL" ];
+  "RMContainer.RESERVED" [ label = RESERVED ];
+  "RMContainer.RESERVED" -> "RMContainer.ALLOCATED" [ label = "START" ];
+  "RMContainer.RESERVED" -> "RMContainer.RESERVED" [ label = "RESERVED" ];
+  "RMContainer.RESERVED" -> "RMContainer.RELEASED" [ label = "RELEASED" ];
+  "RMContainer.RESERVED" -> "RMContainer.KILLED" [ label = "KILL" ];
+  "RMContainer.RUNNING" [ label = RUNNING ];
+  "RMContainer.RUNNING" -> "RMContainer.RUNNING" [ label = "EXPIRE" ];
+  "RMContainer.RUNNING" -> "RMContainer.RELEASED" [ label = "RELEASED" ];
+  "RMContainer.RUNNING" -> "RMContainer.COMPLETED" [ label = "FINISHED" ];
+  "RMContainer.RUNNING" -> "RMContainer.KILLED" [ label = "KILL" ];
+  "RMContainer.EXPIRED" [ label = EXPIRED ];
+  "RMContainer.EXPIRED" -> "RMContainer.EXPIRED" [ label = "RELEASED,KILL" ];
+  "RMContainer.NEW" [ label = NEW ];
+  "RMContainer.NEW" -> "RMContainer.ALLOCATED" [ label = "START" ];
+  "RMContainer.NEW" -> "RMContainer.RESERVED" [ label = "RESERVED" ];
+  "RMContainer.NEW" -> "RMContainer.RUNNING" [ label = "RECOVER" ];
+  "RMContainer.NEW" -> "RMContainer.COMPLETED" [ label = "RECOVER" ];
+  "RMContainer.NEW" -> "RMContainer.KILLED" [ label = "KILL" ];
+  "RMContainer.KILLED" [ label = KILLED ];
+  "RMContainer.KILLED" -> "RMContainer.KILLED" [ label = "EXPIRE,\nRELEASED,\nFINISHED,\nKILL" ];
+  "RMContainer.COMPLETED" [ label = COMPLETED ];
+  "RMContainer.COMPLETED" -> "RMContainer.COMPLETED" [ label = "EXPIRE,\nRELEASED,\nKILL" ];
+  "RMContainer.ALLOCATED" [ label = ALLOCATED ];
+  "RMContainer.ALLOCATED" -> "RMContainer.EXPIRED" [ label = "EXPIRE" ];
+  "RMContainer.ALLOCATED" -> "RMContainer.KILLED" [ label = "KILL" ];
+  "RMContainer.ALLOCATED" -> "RMContainer.ACQUIRED" [ label = "ACQUIRED" ];
+}
+
+}

@@ -1,0 +1,50 @@
+digraph NodeManager {
+node [fontsize=12, fontname=Helvetica];
+edge [fontsize=9, fontcolor=blue, fontname=Arial];
+
+subgraph cluster_Container {
+label="Container"
+  "Container.LOCALIZED" [ label = LOCALIZED ];
+  "Container.LOCALIZED" -> "Container.LOCALIZED" [ label = "UPDATE_DIAGNOSTICS_MSG" ];
+  "Container.LOCALIZED" -> "Container.RUNNING" [ label = "CONTAINER_LAUNCHED" ];
+  "Container.LOCALIZED" -> "Container.EXITED_WITH_FAILURE" [ label = "CONTAINER_EXITED_WITH_FAILURE" ];
+  "Container.LOCALIZED" -> "Container.KILLING" [ label = "KILL_CONTAINER" ];
+  "Container.EXITED_WITH_FAILURE" [ label = EXITED_WITH_FAILURE ];
+  "Container.EXITED_WITH_FAILURE" -> "Container.EXITED_WITH_FAILURE" [ label = "UPDATE_DIAGNOSTICS_MSG,\nKILL_CONTAINER" ];
+  "Container.EXITED_WITH_FAILURE" -> "Container.DONE" [ label = "CONTAINER_RESOURCES_CLEANEDUP" ];
+  "Container.KILLING" [ label = KILLING ];
+  "Container.KILLING" -> "Container.KILLING" [ label = "UPDATE_DIAGNOSTICS_MSG,\nCONTAINER_LAUNCHED,\nRESOURCE_LOCALIZED,\nRESOURCE_FAILED,\nKILL_CONTAINER" ];
+  "Container.KILLING" -> "Container.DONE" [ label = "CONTAINER_RESOURCES_CLEANEDUP" ];
+  "Container.KILLING" -> "Container.EXITED_WITH_SUCCESS" [ label = "CONTAINER_EXITED_WITH_SUCCESS" ];
+  "Container.KILLING" -> "Container.CONTAINER_CLEANEDUP_AFTER_KILL" [ label = "CONTAINER_KILLED_ON_REQUEST" ];
+  "Container.KILLING" -> "Container.EXITED_WITH_FAILURE" [ label = "CONTAINER_EXITED_WITH_FAILURE" ];
+  "Container.NEW" [ label = NEW ];
+  "Container.NEW" -> "Container.NEW" [ label = "UPDATE_DIAGNOSTICS_MSG" ];
+  "Container.NEW" -> "Container.LOCALIZING" [ label = "INIT_CONTAINER" ];
+  "Container.NEW" -> "Container.LOCALIZATION_FAILED" [ label = "INIT_CONTAINER" ];
+  "Container.NEW" -> "Container.LOCALIZED" [ label = "INIT_CONTAINER" ];
+  "Container.NEW" -> "Container.DONE" [ label = "INIT_CONTAINER,\nKILL_CONTAINER" ];
+  "Container.LOCALIZATION_FAILED" [ label = LOCALIZATION_FAILED ];
+  "Container.LOCALIZATION_FAILED" -> "Container.LOCALIZATION_FAILED" [ label = "UPDATE_DIAGNOSTICS_MSG,\nRESOURCE_LOCALIZED,\nRESOURCE_FAILED,\nKILL_CONTAINER" ];
+  "Container.LOCALIZATION_FAILED" -> "Container.DONE" [ label = "CONTAINER_RESOURCES_CLEANEDUP" ];
+  "Container.LOCALIZING" [ label = LOCALIZING ];
+  "Container.LOCALIZING" -> "Container.LOCALIZING" [ label = "UPDATE_DIAGNOSTICS_MSG,\nRESOURCE_LOCALIZED" ];
+  "Container.LOCALIZING" -> "Container.LOCALIZED" [ label = "RESOURCE_LOCALIZED" ];
+  "Container.LOCALIZING" -> "Container.LOCALIZATION_FAILED" [ label = "RESOURCE_FAILED" ];
+  "Container.LOCALIZING" -> "Container.KILLING" [ label = "KILL_CONTAINER" ];
+  "Container.CONTAINER_CLEANEDUP_AFTER_KILL" [ label = CONTAINER_CLEANEDUP_AFTER_KILL ];
+  "Container.CONTAINER_CLEANEDUP_AFTER_KILL" -> "Container.CONTAINER_CLEANEDUP_AFTER_KILL" [ label = "UPDATE_DIAGNOSTICS_MSG,\nCONTAINER_EXITED_WITH_SUCCESS,\nRESOURCE_FAILED,\nCONTAINER_EXITED_WITH_FAILURE,\nKILL_CONTAINER" ];
+  "Container.CONTAINER_CLEANEDUP_AFTER_KILL" -> "Container.DONE" [ label = "CONTAINER_RESOURCES_CLEANEDUP" ];
+  "Container.RUNNING" [ label = RUNNING ];
+  "Container.RUNNING" -> "Container.RUNNING" [ label = "UPDATE_DIAGNOSTICS_MSG" ];
+  "Container.RUNNING" -> "Container.EXITED_WITH_SUCCESS" [ label = "CONTAINER_EXITED_WITH_SUCCESS" ];
+  "Container.RUNNING" -> "Container.EXITED_WITH_FAILURE" [ label = "CONTAINER_KILLED_ON_REQUEST,\nCONTAINER_EXITED_WITH_FAILURE" ];
+  "Container.RUNNING" -> "Container.KILLING" [ label = "KILL_CONTAINER" ];
+  "Container.EXITED_WITH_SUCCESS" [ label = EXITED_WITH_SUCCESS ];
+  "Container.EXITED_WITH_SUCCESS" -> "Container.EXITED_WITH_SUCCESS" [ label = "UPDATE_DIAGNOSTICS_MSG,\nKILL_CONTAINER" ];
+  "Container.EXITED_WITH_SUCCESS" -> "Container.DONE" [ label = "CONTAINER_RESOURCES_CLEANEDUP" ];
+  "Container.DONE" [ label = DONE ];
+  "Container.DONE" -> "Container.DONE" [ label = "UPDATE_DIAGNOSTICS_MSG,\nCONTAINER_EXITED_WITH_SUCCESS,\nINIT_CONTAINER,\nRESOURCE_FAILED,\nCONTAINER_EXITED_WITH_FAILURE,\nKILL_CONTAINER" ];
+}
+
+}
