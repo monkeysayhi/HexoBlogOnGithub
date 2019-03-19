@@ -104,7 +104,8 @@ qiniu:
   access_key:
   secret_key:
   dirPrefix: static
-  urlPrefix: http://static.msh.tademingzi.com/static
+  # urlPrefix: http://static.msh.tademingzi.com/static
+  urlPrefix: https://raw.githubusercontent.com/monkeysayhi/HexoBlogOnGithub/master/qiniu/static
   up_host: http://upload.qiniu.com
   local_dir: qiniu/static
   update_exist: true
